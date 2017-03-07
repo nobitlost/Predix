@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Electric Imp
+// Copyright (c) 2017 Electric Imp
 // This file is licensed under the MIT License
 // http://opensource.org/licenses/MIT
 
@@ -6,13 +6,13 @@
 #require "promise.class.nut:3.0.0"
 
 // Predix Class:
-//     Provides an integration with Predix IoT platform using 
+//     Provides an integration with GE Predix IoT platform using 
 //     Predix User Account and Authentication (UAA), Asset and Time Series
 //     services REST API.
 // 
-//     To use this library you will need to 
-//         - register an account on the Predix platform
-//         - add UAA, Assets, Time Series services to the account
+//     Before using this library you need to:
+//         - register an account at the Predix platform
+//         - add UAA, Assets, Time Series services to your account
 //         - create a client using UAA service instance
 //         - deploy a web application to the Predix platform
 //         - bind UAA, Assets and Time Series service instances to a web application
@@ -20,8 +20,23 @@
 //           instances
 //     For more information see Predix Documentation https://www.predix.io/docs
 //
-//     You will need the UAA instance URL, client id, client secret, Asset-Zone-Id
-//     and TimeSeries-Zone-Id to instantiate Predix library.
+//     To instantiate this library you need to have:
+//         - UAA service instance URL,
+//         - UAA service client id,
+//         - UAA service client secret,
+//         - Asset service Zone-Id,
+//         - TimeSeries service Zone-Id.
+//
+//     EI device or any other "thing" is represented in the Predix platform as an 
+//     asset. Every asset is uniquely identified by a pair <assetType>/<assetId>.
+//     Usually <assetType> is a type of assets, type of devices, type of "things".
+//     It is recommended that you name your <assetType>(s) as related to your
+//     application, company, use-case, type of your devices and/or sensors, etc.
+//     <assetId> is a unique identifier in the scope of a particular <assetType>.
+//     <assetId> may have hierarchical naming structure inside or just to be a
+//     unique number (e.g. device id).
+//     All library methods which operate with assets and ingest data have
+//     <assetType>, <assetId> pair as parameters.
 //
 //     Predix Time Series service uses WebSocket protocol for data ingestion.
 //     The current library implementation uses external http-to-websocket proxy 
@@ -30,11 +45,13 @@
 //     The proxy URL should be set using setHttpToWsProxyUrl method before the 
 //     first data ingestion.
 //
-//     All requests to Predix platform will be made asynchronously. Any method that 
-//     sends a request can take an optional callback parameter. If a callback is 
-//     provided, it will be executed when the response is received. 
-//     The callback function has two required parameters: error and response.
-//     If no error was encountered, the error parameter will be null.
+//     All requests to Predix platform are made asynchronously. Any method that 
+//     sends a request has an optional callback parameter. If the callback is 
+//     provided, it is executed when the response is received and the operation
+//     is completed, successfully or not.
+//     The callback function has two parameters: error and response.
+//     If no error occurs, the error parameter is null.
+//     If the error parameter is not null, the operation has been failed.
 //
 // Dependencies
 //     Promise Library
@@ -85,7 +102,11 @@ class Predix {
 
     // Creates or updates custom asset for the EI device in Predix IoT platform 
     // using Predix Asset service.
-    // The created asset will be available at ASSET_BASE_URL/{assetType}/{assetId} URL.
+    // The asset is uniquely identified by a pair <assetType>, <assetId>.
+    // If the asset with this identifier does not exist, it is created.
+    // The created asset will be available at ASSET_BASE_URL/<assetType>/<assetId> URL.
+    // If the asset with this identifier already exists, it is updated by the new
+    // provided properties. All old properties are deleted.
     //
     // Parameters:
     //     assetType        Predix asset type, any alphanumeric value with optional
@@ -119,8 +140,10 @@ class Predix {
     }
     
     // Queries custom asset from Predix IoT platform. 
-    // If the asset doesn't exist, passes MISSING_RESOURCE_ERROR value to the 
-    // callback error parameter.
+    // If the asset doesn't exist, the callback (if provided) is called with 
+    // error parameter = MISSING_RESOURCE_ERROR.
+    // If the asset exists, the callback (if provided) is called with
+    // error parameter = null.
     //
     // Parameters:
     //     assetType        Type of the asset
@@ -180,8 +203,8 @@ class Predix {
             }.bindenv(this));
     }
 
-    // Ingest any data to Predix IoT platform using Predix Time Series service.
-    // Every data_value from data parameter formatted as {"<data_name>" : "<data_value>", ...}
+    // Ingests data to Predix IoT platform using Predix Time Series service.
+    // Every <data_value> from data parameter formatted as {"<data_name>" : "<data_value>", ...}
     // is ingested to Predix Time Series with tag name <assetType>.<assetId>.<data_name>
     //
     // Parameters:
