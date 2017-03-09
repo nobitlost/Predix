@@ -16,7 +16,7 @@
 //         - create a client using UAA service instance
 //         - deploy a web application to the Predix platform
 //         - bind UAA, Assets and Time Series service instances to a web application
-//         - obtain URLs of Assets and Time Series service instances
+//         - obtain URLs of UAA, Assets and Time Series service instances
 //         - obtain Zone-Id identificators of Assets and Time Series service 
 //           instances
 //     For more information see Predix Documentation https://www.predix.io/docs
@@ -41,29 +41,21 @@
 //     All library methods which operate with assets and ingest data have
 //     <assetType>, <assetId> pair as parameters.
 //
-//     Predix Time Series service uses WebSocket protocol for data ingestion.
-//     The current library implementation uses external http-to-websocket proxy 
-//     that receives HTTP requests from the library and resends them to the Predix 
-//     Time Series service through WebSocket.
-//     The proxy URL should be specified using timeSeriesIngestUrl constructor 
-//     parameter.
-//
-//     All requests to Predix platform are made asynchronously. Any method that 
-//     sends a request has an optional callback parameter. If the callback is 
-//     provided, it is executed when the response is received and the operation
-//     is completed, successfully or not.
+//     All requests to Predix platform are made asynchronously.
+//     Any method that sends a request has an optional callback parameter.
+//     If the callback is provided, it is executed when a response is received
+//     and the operation is completed, successfully or not.
 //     The callback function has signature:
-//     cb(error, response), where
-//         error : string     Response error message or null 
-//                            if no error was encountered
-//         response : table   Response received as a reply to Predix platform
-//                            request. It contains the following keys and values:
-//                                statuscode : HTTP status code
-//                                headers    : table of returned HTTP headers
-//                                body       : returned HTTP body decoded from 
-//                                             JSON (if any)
-//     If no error occurs, the error parameter is null.
-//     If the error parameter is not null, the operation has been failed.
+//         cb(error, response), where
+//             error : string
+//                 Error message (if the operation has been failed)
+//                 or null (no error occured, the operation is successfull).
+//             response : table
+//                 Response received as a reply from the Predix platform.
+//                 It contains the following keys and values:
+//                     statuscode : HTTP status code
+//                     headers    : table of returned HTTP headers
+//                     body       : returned HTTP body decoded from JSON (if any)
 //
 // Dependencies
 //     Promise Library
@@ -221,9 +213,9 @@ class Predix {
     // Parameters:
     //     assetType : string        Type of the asset
     //     assetId : string          Id of asset whose data is posted
-    //     data : table              data to be ingested to Predix Time Series,
+    //     data : table              Data to be ingested to Predix Time Series,
     //                               table formatted as {"<data_name>" : "<data_value>", ...}
-    //     ts (optional) : integer   data measurement timestamp in seconds since epoch.
+    //     ts (optional) : integer   Data measurement timestamp in seconds since epoch.
     //                               If not specified, the current timestamp is used
     //     cb (optional) : function  Function to execute when response received,
     //                               the exact format is specified above 
