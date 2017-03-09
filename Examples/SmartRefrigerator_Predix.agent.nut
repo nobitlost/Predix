@@ -358,12 +358,15 @@ class Application {
      *      uaaUrl : string - Predix UAA service instance URL
      *      clientId : string - Id of a client registered in Predix UAA service
      *      clientSecret : string - Predix UAA client secret
+     *      assetUrl : string - Predix Asset service instance URL
      *      assetZoneId : string - Predix Zone ID for Asset service
+     *      timeSeriesIngestUrl : string - Predix Time Series service ingestion URL
      *      timeSeriesZoneId : string - Predix Zone ID for TimeSeries service
-     *      httpToWsProxyUrl : string - URL of external http-to-websocket proxy
      **************************************************************************************/
-    constructor(uaaUrl, clientId, clientSecret, assetZoneId, timeSeriesZoneId, httpToWsProxyUrl) {
-        initializeClasses(uaaUrl, clientId, clientSecret, assetZoneId, timeSeriesZoneId, httpToWsProxyUrl);
+    constructor(uaaUrl, clientId, clientSecret, 
+                assetUrl, assetZoneId, timeSeriesIngestUrl, timeSeriesZoneId) {
+        initializeClasses(uaaUrl, clientId, clientSecret, 
+            assetUrl, assetZoneId, timeSeriesIngestUrl, timeSeriesZoneId);
         setDataMngrHandlers();
     }
 
@@ -374,16 +377,19 @@ class Application {
      *      uaaUrl : string - Predix UAA service instance URL
      *      clientId : string - Id of a client registered in Predix UAA service
      *      clientSecret : string - Predix UAA client secret
+     *      assetUrl : string - Predix Asset service instance URL
      *      assetZoneId : string - Predix Zone ID for Asset service
+     *      timeSeriesIngestUrl : string - Predix Time Series service ingestion URL
      *      timeSeriesZoneId : string - Predix Zone ID for TimeSeries service
-     *      httpToWsProxyUrl : string - URL of external http-to-websocket proxy
      **************************************************************************************/
-    function initializeClasses(uaaUrl, clientId, clientSecret, assetZoneId, timeSeriesZoneId, httpToWsProxyUrl) {
+    function initializeClasses(uaaUrl, clientId, clientSecret, 
+                               assetUrl, assetZoneId,
+                               timeSeriesIngestUrl, timeSeriesZoneId) {
         // agent/device communication helper library
         local _bull = Bullwinkle();
         // Library for integration with Predix IoT platform
-        predix = Predix(uaaUrl, clientId, clientSecret, assetZoneId, timeSeriesZoneId);
-        predix.setHttpToWsProxyUrl(httpToWsProxyUrl);
+        predix = Predix(uaaUrl, clientId, clientSecret, 
+            assetUrl, assetZoneId, timeSeriesIngestUrl, timeSeriesZoneId);
         // Class to manage sensor data from device
         dataMngr = SmartFrigDataManager(_bull);
         local alerts = [DOOR_OPEN_EVENT_ID, TEMP_ALERT_EVENT_ID, HUMID_ALERT_EVENT_ID];
@@ -417,7 +423,7 @@ class Application {
         
         // Post data if Predix device configured
         if (devMngr.deviceConfigured) {
-            predix.ingestData(devMngr.DEVICE_TYPE_ID, devMngr.deviceID, ts, reading, predixResponseHandler.bindenv(this));
+            predix.ingestData(devMngr.DEVICE_TYPE_ID, devMngr.deviceID, reading, ts, predixResponseHandler.bindenv(this));
         }
     }
 
@@ -467,7 +473,7 @@ class Application {
         if (devMngr.deviceConfigured) {
             local data = {};
             data[eventId] <- format("%s: %s", alert, description);
-            predix.ingestData(devMngr.DEVICE_TYPE_ID, devMngr.deviceID, ts, data, predixResponseHandler.bindenv(this));
+            predix.ingestData(devMngr.DEVICE_TYPE_ID, devMngr.deviceID, data, ts, predixResponseHandler.bindenv(this));
         }
     }
 
@@ -491,13 +497,15 @@ class Application {
 // ----------------------------------------------
 
 // Predix account constants
-const UAA_URL = "https://<YOUR UAA INSTANCE>.predix-uaa.run.aws-usw02-pr.ice.predix.io";
+const UAA_URL = "<YOUR UAA SERVICE INSTANCE URL>"; // usually "https://<YOUR UAA INSTANCE>.predix-uaa.run.aws-usw02-pr.ice.predix.io";
 const CLIENT_ID = "<YOUR CLIENT ID>";
 const CLIENT_SECRET = "<YOUR CLIENT SECRET>";
+const ASSET_URL = "<YOUR ASSET SERVICE INSTANCE URL>"; // usually "https://predix-asset.run.aws-usw02-pr.ice.predix.io"
 const ASSET_ZONE_ID = "<YOUR PREDIX-ZONE-ID FOR ASSET SERVICE>";
+const TIME_SERIES_INGEST_URL = "<URL OF EXTERNAL HTTP TO WS PROXY>";
 const TIME_SERIES_ZONE_ID = "<YOUR PREDIX-ZONE-ID FOR TIME SERIES SERVICE>";
-const HTTP_TO_WS_PROXY_URL = "<URL OF EXTERNAL HTTP TO WS PROXY>";
 
 // Start Application
 app <- Application(UAA_URL, CLIENT_ID, CLIENT_SECRET,
-                   ASSET_ZONE_ID, TIME_SERIES_ZONE_ID, HTTP_TO_WS_PROXY_URL);
+                   ASSET_URL, ASSET_ZONE_ID, 
+                   TIME_SERIES_INGEST_URL, TIME_SERIES_ZONE_ID);

@@ -16,6 +16,7 @@
 //         - create a client using UAA service instance
 //         - deploy a web application to the Predix platform
 //         - bind UAA, Assets and Time Series service instances to a web application
+//         - obtain URLs of Assets and Time Series service instances
 //         - obtain Zone-Id identificators of Assets and Time Series service 
 //           instances
 //     For more information see Predix Documentation https://www.predix.io/docs
@@ -24,7 +25,9 @@
 //         - UAA service instance URL,
 //         - UAA service client id,
 //         - UAA service client secret,
+//         - Asset service instance URL,
 //         - Asset service Zone-Id,
+//         - TimeSeries service ingestion URL,
 //         - TimeSeries service Zone-Id.
 //
 //     EI device or any other "thing" is represented in the Predix platform as an 
@@ -42,134 +45,148 @@
 //     The current library implementation uses external http-to-websocket proxy 
 //     that receives HTTP requests from the library and resends them to the Predix 
 //     Time Series service through WebSocket.
-//     The proxy URL should be set using setHttpToWsProxyUrl method before the 
-//     first data ingestion.
+//     The proxy URL should be specified using timeSeriesIngestUrl constructor 
+//     parameter.
 //
 //     All requests to Predix platform are made asynchronously. Any method that 
 //     sends a request has an optional callback parameter. If the callback is 
 //     provided, it is executed when the response is received and the operation
 //     is completed, successfully or not.
-//     The callback function has two parameters: error and response.
+//     The callback function has signature:
+//     cb(error, response), where
+//         error : string     Response error message or null 
+//                            if no error was encountered
+//         response : table   Response received as a reply to Predix platform
+//                            request. It contains the following keys and values:
+//                                statuscode : HTTP status code
+//                                headers    : table of returned HTTP headers
+//                                body       : returned HTTP body decoded from 
+//                                             JSON (if any)
 //     If no error occurs, the error parameter is null.
 //     If the error parameter is not null, the operation has been failed.
 //
 // Dependencies
 //     Promise Library
  
+// Predix REST API error messages
+const PREDIX_INVALID_REQUEST_ERROR = "Error: Invalid Request";
+const PREDIX_INVALID_AUTH_TOKEN_ERROR = "Error: Invalid Authentication Token";
+const PREDIX_MISSING_RESOURCE_ERROR = "Error: Resource does not exist";
+const PREDIX_PAYLOAD_TOO_LARGE = "Error: Payload Too Large";
+const PREDIX_INTERNAL_SERVER_ERROR = "Error: Internal Server Error";
+const PREDIX_UNEXPECTED_ERROR = "Error: Unexpected error";
+
+// Internal Predix library constants
+const _PREDIX_TOKEN_RENEW_BEFORE_EXPIRY_SEC = 60;
+
 class Predix {
-    static version = [1, 0, 0];
+    static VERSION = "1.0.0";
 
-    // Predix REST API error messages
-    static INVALID_REQUEST_ERROR = "Error: Invalid Request";
-    static INVALID_AUTH_TOKEN_ERROR = "Error: Invalid Authentication Token";
-    static MISSING_RESOURCE_ERROR = "Error: Resource does not exist";
-    static PAYLOAD_TOO_LARGE = "Error: Payload Too Large";
-    static INTERNAL_SERVER_ERROR = "Error: Internal Server Error";
-    static UNEXPECTED_ERROR = "Error: Unexpected error";
-
-    // Predix Asset service URL
-    static ASSET_BASE_URL = "https://predix-asset.run.aws-usw02-pr.ice.predix.io";
-
-    static TOKEN_RENEW_BEFORE_EXPIRY_SEC = 60;
-    
     _uaaUrl = null;
     _clientId = null;
     _clientSecret = null;
+    _assetUrl = null;
     _assetZoneId = null;
+    _timeSeriesIngestUrl = null;
     _timeSeriesZoneId = null;
-    _httpToWsProxyUrl = null;
     
     _accessToken = null;
     _tokenRenewTime = null; 
+    _isHttpTimeSeriesIngest = false;
 
     // Predix library constructor
     //
     // Parameters:
-    //     uaaUrl              Predix UAA service instance URL
-    //     clientId            Id of a client registered in Predix UAA service
-    //     clientSecret        Predix UAA client secret
-    //     assetZoneId         Predix Zone ID for Asset service
-    //     timeSeriesZoneId    Predix Zone ID for TimeSeries service
+    //     uaaUrl : string              Predix UAA service instance URL
+    //     clientId : string            Id of a client registered in Predix UAA service
+    //     clientSecret : string        Predix UAA client secret
+    //     assetUrl : string            Predix Asset service instance URL
+    //     assetZoneId : string         Predix Zone ID for Asset service
+    //     timeSeriesIngestUrl : string Predix Time Series service ingestion URL
+    //     timeSeriesZoneId : string    Predix Zone ID for TimeSeries service
     //
-    // Returns: Predix library object created
-    constructor(uaaUrl, clientId, clientSecret, assetZoneId, timeSeriesZoneId) {
+    // Returns:                         Predix library object created
+    constructor(uaaUrl, clientId, clientSecret, assetUrl, assetZoneId, timeSeriesIngestUrl, timeSeriesZoneId) {
         _uaaUrl = uaaUrl;
         _clientId = clientId;
         _clientSecret = clientSecret;
+        _assetUrl = assetUrl;
         _assetZoneId = assetZoneId;
+        _timeSeriesIngestUrl = timeSeriesIngestUrl;
         _timeSeriesZoneId = timeSeriesZoneId;
+
+        // check timeSeriesIngestUrl scheme
+        local scheme = timeSeriesIngestUrl.slice(0, timeSeriesIngestUrl.find(":"));
+        if (scheme == "https" || scheme == "http") {
+            _isHttpTimeSeriesIngest = true;
+        }
     }
 
     // Creates or updates custom asset for the EI device in Predix IoT platform 
     // using Predix Asset service.
     // The asset is uniquely identified by a pair <assetType>, <assetId>.
     // If the asset with this identifier does not exist, it is created.
-    // The created asset will be available at ASSET_BASE_URL/<assetType>/<assetId> URL.
+    // The created asset will be available at <_assetUrl>/<assetType>/<assetId> URL.
     // If the asset with this identifier already exists, it is updated by the new
     // provided properties. All old properties are deleted.
     //
     // Parameters:
-    //     assetType        Predix asset type, any alphanumeric value with optional
-    //                      underscores or dashes
-    //     assetId          Id of asset to be created in Predix, any alphanumeric 
-    //                      value with optional underscores or dashes
-    //     assetInfo        Asset properties of any format
-    //     cb (optional)    Function to execute when response received. 
-    //                      It has signature:
-    //                          cb(error, response), where
-    //                              error       Response error message or null 
-    //                                          if no error was encountered
-    //                              response    Response received as reply
+    //     assetType : string        Predix asset type, any alphanumeric value 
+    //                               with optional underscores or dashes
+    //     assetId : string          Id of asset to be created in Predix, any 
+    //                               alphanumeric value with optional underscores
+    //                               or dashes
+    //     assetInfo : table         Asset properties of any format.
+    //                               Any property of the device can be specified
+    //                               in the format {"<property_name>" : <property_value>, ...}.
+    //                               assetInfo can be empty.
+    //     cb (optional) : function  Function to execute when response received, 
+    //                               the exact format is specified above
     //
-    // Returns:             Nothing
+    // Returns:                      Nothing
     function createAsset(assetType, assetId, assetInfo, cb = null) {
         // check access token, then
-        // POST to ASSET_BASE_URL/{assetType}
-        _checkAccessToken().
+        // POST to <_assetUrl>/<assetType>
+        _accessCheckPromise().
             then(function(msg) {
+                if (!assetInfo) {
+                    assetInfo = {};
+                }
                 assetInfo["uri"] <- format("/%s/%s", assetType, assetId);
-                local url = format("%s/%s", ASSET_BASE_URL, assetType);
+                local url = format("%s/%s", _assetUrl, assetType);
                 local req = http.post(url, _createHeaders(_assetZoneId), http.jsonencode([assetInfo]));
                 req.sendasync(function(resp) {
                     _processResponse(resp, cb);
                 }.bindenv(this));
             }.bindenv(this),
-            function(reason) {
-                server.error(reason);
-            }.bindenv(this));
+            _handleError);
     }
     
     // Queries custom asset from Predix IoT platform. 
     // If the asset doesn't exist, the callback (if provided) is called with 
-    // error parameter = MISSING_RESOURCE_ERROR.
+    // error parameter = PREDIX_MISSING_RESOURCE_ERROR.
     // If the asset exists, the callback (if provided) is called with
     // error parameter = null.
     //
     // Parameters:
-    //     assetType        Type of the asset
-    //     assetId          Id of the asset to be queried
-    //     cb (optional)    Function to execute when response received. 
-    //                      It has signature:
-    //                          cb(error, response), where
-    //                              error       Response error message or null 
-    //                                          if no error was encountered
-    //                              response    Response received as reply
+    //     assetType : string        Type of the asset
+    //     assetId : string          Id of the asset to be queried
+    //     cb (optional) : function  Function to execute when response received, 
+    //                               the exact format is specified above
     //
-    // Returns:             Nothing
+    // Returns:                      Nothing
     function queryAsset(assetType, assetId, cb = null) {
         // check access token, then
-        // GET to ASSET_BASE_URL/{assetType}/{assetId}
-        _checkAccessToken().
+        // GET to <_assetUrl>/<assetType>/<assetId>
+        _accessCheckPromise().
             then(function(msg) {
-                local url = format("%s/%s/%s", ASSET_BASE_URL, assetType, assetId);
+                local url = format("%s/%s/%s", _assetUrl, assetType, assetId);
                 local req = http.get(url, _createHeaders(_assetZoneId));
                 req.sendasync(function(resp) {
                     _processResponse(resp, cb);
                 }.bindenv(this));
             }.bindenv(this),
-            function(reason) {
-                server.error(reason);
-            }.bindenv(this));
+            _handleError);
     }
     
     // Deletes custom asset from Predix IoT platform.
@@ -177,30 +194,24 @@ class Predix {
     // the callback.
     //
     // Parameters:
-    //     assetType        Type of the asset
-    //     assetId          Id of the asset to be deleted
-    //     cb (optional)    Function to execute when response received. 
-    //                      It has signature:
-    //                          cb(error, response), where
-    //                              error       Response error message or null 
-    //                                          if no error was encountered
-    //                              response    Response received as reply
+    //     assetType : string        Type of the asset
+    //     assetId : string          Id of the asset to be deleted
+    //     cb (optional) : function  Function to execute when response received,
+    //                               the exact format is specified above
     //
-    // Returns:             Nothing
+    // Returns:                      Nothing
     function deleteAsset(assetType, assetId, cb = null) {
         // check access token, then
-        // DELETE to ASSET_BASE_URL/{assetType}/{assetId}
-        _checkAccessToken().
+        // DELETE to <_assetUrl>/<assetType>/<assetId>
+        _accessCheckPromise().
             then(function(msg) {
-                local url = format("%s/%s/%s", ASSET_BASE_URL, assetType, assetId);
+                local url = format("%s/%s/%s", _assetUrl, assetType, assetId);
                 local req = http.httpdelete(url, _createHeaders(_assetZoneId));
                 req.sendasync(function(resp) {
                     _processResponse(resp, cb);
                 }.bindenv(this));
             }.bindenv(this),
-            function(reason) {
-                server.error(reason);
-            }.bindenv(this));
+            _handleError);
     }
 
     // Ingests data to Predix IoT platform using Predix Time Series service.
@@ -208,32 +219,32 @@ class Predix {
     // is ingested to Predix Time Series with tag name <assetType>.<assetId>.<data_name>
     //
     // Parameters:
-    //     assetType        Type of the asset
-    //     assetId          Id of asset whose data is posted
-    //     ts               data measurement timestamp in seconds since epoch
-    //     data             data to be ingested to Predix Time Series,
-    //                      table formatted as {"<data_name>" : "<data_value>", ...}
-    //     cb (optional)    Function to execute when response received. 
-    //                      It has signature:
-    //                          cb(error, response), where
-    //                              error       Response error message or null 
-    //                                          if no error was encountered
-    //                              response    Response received as reply
+    //     assetType : string        Type of the asset
+    //     assetId : string          Id of asset whose data is posted
+    //     data : table              data to be ingested to Predix Time Series,
+    //                               table formatted as {"<data_name>" : "<data_value>", ...}
+    //     ts (optional) : integer   data measurement timestamp in seconds since epoch.
+    //                               If not specified, the current timestamp is used
+    //     cb (optional) : function  Function to execute when response received,
+    //                               the exact format is specified above 
     //
-    // Returns:             Nothing
-    function ingestData(assetType, assetId, ts, data, cb = null) {
+    // Returns:                      Nothing
+    function ingestData(assetType, assetId, data, ts = null, cb = null) {
         // Predix Time Series service uses WebSocket protocol for data ingestion.
-        // The current implementation uses external http-to-websocket proxy that
+        // The current implementation requires external http-to-websocket proxy that
         // receives HTTP requests from the library and resends them to the Predix 
         // Time Series service through WebSocket
-        if (_httpToWsProxyUrl == null) {
-            server.error("ingestData failed: httpToWsProxyUrl is not set");
+        if (!_isHttpTimeSeriesIngest) {
+            _handleError("ingestData failed: non-HTTP TimeSeries ingestion is currently unsupported");
             return;
         }
         // check access token, then
-        // POST to _httpToWsProxyUrl
-        _checkAccessToken().
+        // POST to <_timeSeriesIngestUrl>
+        _accessCheckPromise().
             then(function(msg) {
+                if (!ts) {
+                    ts = time();
+                }
                 local tsMillis = format("%d000", ts);
                 local body = [];
                 foreach (sensor, value in data) {
@@ -247,29 +258,14 @@ class Predix {
                     "messageId" : tsMillis,
                     "body" : body
                 };
-                local req = http.post(_httpToWsProxyUrl, _createHeaders(_timeSeriesZoneId), http.jsonencode(predixData));
+                local req = http.post(_timeSeriesIngestUrl, _createHeaders(_timeSeriesZoneId), http.jsonencode(predixData));
                 req.sendasync(function(resp) {
                     _processResponse(resp, cb);
                 }.bindenv(this));
             }.bindenv(this),
-            function(reason) {
-                server.error(reason);
-            }.bindenv(this));
+            _handleError);
     }
 
-    // Sets http-to-websocket proxy URL.
-    // The current library implementation uses external http-to-websocket proxy 
-    // that receives HTTP requests from the library and resends them to the Predix 
-    // Time Series service through WebSocket.
-    //
-    // Parameters:
-    //     httpToWsProxyUrl value of _httpToWsProxyUrl property to be set
-    //
-    // Returns:             Nothing
-    function setHttpToWsProxyUrl(httpToWsProxyUrl) {
-        _httpToWsProxyUrl = httpToWsProxyUrl;
-    }
-    
     // -------------------- PRIVATE METHODS -------------------- //
 
     // Checks Predix UAA access token and recreates it if needed.
@@ -278,11 +274,11 @@ class Predix {
     //
     // Returns:             Promise that resolves when access token is successfully 
     //                      obtained, or rejects with an error
-    function _checkAccessToken() {
+    function _accessCheckPromise() {
         return Promise(function(resolve, reject) {
             if (_accessToken == null || _tokenRenewTime < time()) {
                 // Request new access token
-                // POST to _uaaUrl/oauth/token
+                // POST to <_uaaUrl>/oauth/token
                 local url = format("%s/oauth/token", _uaaUrl);
                 local auth = http.base64encode(format("%s:%s", _clientId, _clientSecret));
                 local headers = {
@@ -296,10 +292,10 @@ class Predix {
                         if (err == null) {
                             if ("access_token" in resp.body && "expires_in" in resp.body) {
                                 _accessToken = resp.body["access_token"];
-                                _tokenRenewTime = time() + resp.body["expires_in"] - TOKEN_RENEW_BEFORE_EXPIRY_SEC;
+                                _tokenRenewTime = time() + resp.body["expires_in"] - _PREDIX_TOKEN_RENEW_BEFORE_EXPIRY_SEC;
                                 return resolve("Access token created successfully");
                             }
-                            return reject("Predix UAA response is incorrect");
+                            return reject("Unexpected response from Predix User Account and Authentication service");
                         }
                         else {
                             // we encountered an error
@@ -318,9 +314,9 @@ class Predix {
     // Creates HTTP headers for Predix Asset and Time Series services requests.
     //
     // Parameters:
-    //     predixZoneId     Predix Zone ID of the service instance
+    //     predixZoneId : string     Predix Zone ID of the service instance
     //
-    // Returns:             request header table
+    // Returns:                      request header table
     function _createHeaders(predixZoneId) {
         return {
             "Authorization" : format("Bearer %s", _accessToken),
@@ -332,13 +328,9 @@ class Predix {
     // Processes responses from Predix services.
     //
     // Parameters:
-    //     resp             The response object from Predix
-    //     cb               The callback function passed into the request or null.
-    //                      It has signature:
-    //                          cb(error, response), where
-    //                              error       Response error message or null 
-    //                                          if no error was encountered
-    //                              response    Response received as reply
+    //     resp : table              The response object from Predix
+    //     cb : function             The callback function passed into the request 
+    //                               or null, the exact format is specified above
     //
     // Returns:             Nothing
     function _processResponse(resp, cb) {
@@ -360,30 +352,40 @@ class Predix {
     // Returns error message by status code.
     //
     // Parameters:
-    //     statusCode       status code from response
+    //     statusCode : integer      status code from response
     //
-    // Returns:             the corresponding error message
+    // Returns:                      the corresponding error message
     function _getError(statusCode) {
         local err = null;
         switch (statusCode) {
             case 400:
-                err = INVALID_REQUEST_ERROR;
+                err = PREDIX_INVALID_REQUEST_ERROR;
                 break;
             case 401:
-                err = INVALID_AUTH_TOKEN_ERROR;
+                err = PREDIX_INVALID_AUTH_TOKEN_ERROR;
                 break;
             case 404:
-                err = MISSING_RESOURCE_ERROR;
+                err = PREDIX_MISSING_RESOURCE_ERROR;
                 break;
             case 413:
-                err = PAYLOAD_TOO_LARGE;
+                err = PREDIX_PAYLOAD_TOO_LARGE;
                 break;
             case 500:
-                err = INTERNAL_SERVER_ERROR;
+                err = PREDIX_INTERNAL_SERVER_ERROR;
                 break;
             default:
-                err = format("Status Code: %i, %s", statusCode, UNEXPECTED_ERROR);
+                err = format("Status Code: %i, %s", statusCode, PREDIX_UNEXPECTED_ERROR);
         }
         return err;
+    }
+
+    // Handles an error occurred during the library methods execution
+    //
+    // Parameters:
+    //     errMessage : string       the error message occurred
+    //
+    // Returns:                      Nothing
+    function _handleError(errMessage) {
+        server.error("[Predix] " + errMessage);
     }
 }
