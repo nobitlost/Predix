@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Electric Imp Smart refrigerator</title>
+  <style>
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 16px;
+    }
+    td {
+        padding-right: 25px;
+    }
+    td.header {
+        padding-right: 60px;
+    }
+  </style>
+  <script>
+    function changeAsset() {
+        var al = document.getElementById("assetsList");
+        document.getElementById("sensors_data").setAttribute("onclick", "window.location.href='/"+al.options[al.selectedIndex].text+"'");
+    }
+  </script>
+</head>
+<body>
+  <div class="header">
+    <table>
+     <tr>
+     <td class="header">
+      <a href="/">
+          <img  class="header-logo" src="/public/images/logodark.png"></img>
+      </a>
+     </td>  
+     <td class="header">
+      <h2 class = "title">Smart Refrigerator Demo</h2>
+     </td>  
+     </tr>  
+    </table>
+  </div>
+    <div id="assets">
+      <p>Choose a device and see sensors data</p>
+      <select id="assetsList" class="assets" onchange="changeAsset()">
+      </select>
+      <button id="sensors_data" onclick="window.location.href='/'">Sensors Data</button>
+    </div>
+    <div id="no_assets" style="display:none">
+      <p>There are no registered devices</p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "electric_imp_smart_fridge",
+  "version": "1.0.0",
+  "start": "node electric_imp_smart_fridge.js",
+  "author": "Electric Imp",
+  "description": "Electric Imp Smart Refrigerator demo",
+  "dependencies": {
+    "cheerio": "latest",
+    "ws": "latest"
+  }
+}
+

@@ -1,0 +1,19 @@
+# Copyright (c) 2017 Electric Imp
+# This file is licensed under the MIT License
+# http://opensource.org/licenses/MIT
+
+applications:
+  - name: electric_imp_smart_fridge
+    memory: 256M
+    buildpack: nodejs_buildpack
+    command: node electric_imp_smart_fridge.js
+
+services:
+  - <YOUR ASSET SERVICE INSTANCE NAME>
+  - <YOUR TIME SERIES SERVICE INSTANCE NAME>
+  - <YOUR UAA SERVICE INSTANCE NAME>
+
+env:
+  clientId: <YOUR CLIENT ID IN UAA SERVICE>
+  clientSecret: <YOUR CLIENT SECRET>
+
