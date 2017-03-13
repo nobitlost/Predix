@@ -7,7 +7,10 @@
 // This application is a part of ElectricImp Smart Refrigerator demo that
 // integrates Electric Imp devices with GE Predix IoT platform.
 // It shows the latest data (temperature/humidity/door status) and
-// possible alerts of ElectricImp devices connected to Predix.
+// alerts from ElectricImp devices connected to Predix.
+// Additionally it implements http-to-websocket proxy that receives HTTP 
+// requests from ElectricImp Predix library and resends them to the 
+// Predix Time Series service through WebSocket.
 
 // required modules
 const HTTP = require('http');
