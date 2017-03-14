@@ -98,6 +98,7 @@ class Predix {
     _accessToken = null;
     _tokenRenewTime = null; 
     _isHttpTimeSeriesIngest = false;
+    _libInitialized = null;
 
     // Predix library constructor
     //
@@ -120,7 +121,7 @@ class Predix {
         _timeSeriesIngestUrl = timeSeriesIngestUrl;
         _timeSeriesZoneId = timeSeriesZoneId;
 
-        _validateNonEmpty(null, _uaaUrl, _clientId, _clientSecret, 
+        _libInitialized = _checkLibStateAndParams(null, _uaaUrl, _clientId, _clientSecret, 
             _assetUrl, _assetZoneId, _timeSeriesIngestUrl, _timeSeriesZoneId);
 
         if (_timeSeriesIngestUrl != null) {
@@ -155,7 +156,7 @@ class Predix {
     //
     // Returns:                      Nothing
     function createAsset(assetType, assetId, assetInfo, cb = null) {
-        if (!_validateNonEmpty(cb, assetType, assetId)) {
+        if (!_checkLibStateAndParams(cb, assetType, assetId)) {
             return;
         }
         // check access token, then
@@ -188,7 +189,7 @@ class Predix {
     //
     // Returns:                      Nothing
     function queryAsset(assetType, assetId, cb = null) {
-        if (!_validateNonEmpty(cb, assetType, assetId)) {
+        if (!_checkLibStateAndParams(cb, assetType, assetId)) {
             return;
         }
         // check access token, then
@@ -215,7 +216,7 @@ class Predix {
     //
     // Returns:                      Nothing
     function deleteAsset(assetType, assetId, cb = null) {
-        if (!_validateNonEmpty(cb, assetType, assetId)) {
+        if (!_checkLibStateAndParams(cb, assetType, assetId)) {
             return;
         }
         // check access token, then
@@ -246,7 +247,7 @@ class Predix {
     //
     // Returns:                      Nothing
     function ingestData(assetType, assetId, data, ts = null, cb = null) {
-        if (!_validateNonEmpty(cb, assetType, assetId, data)) {
+        if (!_checkLibStateAndParams(cb, assetType, assetId, data)) {
             return;
         }
         // Predix Time Series service uses WebSocket protocol for data ingestion.
@@ -377,28 +378,34 @@ class Predix {
         }
     }
 
-    // Validates that all of the optional parameters are not null or empty string
-    // or table. 
+    // Checks that the library is initialized successfully and all of the 
+    // optional parameters are not null or empty string/table. 
     // Executes the callback with PREDIX_STATUS.LIBRARY_ERROR status if any of 
-    // the parameter is invalid.
+    // the checks is failed.
     //
     // Parameters:
     //     cb : function          The callback function passed into the request 
     //                            or null, the exact format is specified above
     //     optional parameters    values to be validated
     //
-    // Returns:                   true if all of the optional parameters are valid, 
+    // Returns:                   true if the library is initialized successfully 
+    //                            and all of the optional parameters are valid, 
     //                            false otherwise
-    function _validateNonEmpty(cb, ...) {
-        local param;
-        foreach (param in vargv) {
-            if (!param || typeof param == "string" && param.len() == 0 ||
-                typeof param == "table" && param.len() == 0) {
-                _handleError(PREDIX_STATUS.LIBRARY_ERROR, _PREDIX_WRONG_EMPTY_ARGUMENT, null, cb)
-                return false;
+    function _checkLibStateAndParams(cb, ...) {
+        local isValid = _libInitialized != null ? _libInitialized : true;
+        if (isValid) {
+            foreach (param in vargv) {
+                if (!param || typeof param == "string" && param.len() == 0 ||
+                    typeof param == "table" && param.len() == 0) {
+                    isValid = false;
+                    break;
+                }
             }
         }
-        return true;
+        if (!isValid) {
+            _handleError(PREDIX_STATUS.LIBRARY_ERROR, _PREDIX_WRONG_EMPTY_ARGUMENT, null, cb)
+        }
+        return isValid;
     }
 
     // Handles an error occurred during the library methods execution
