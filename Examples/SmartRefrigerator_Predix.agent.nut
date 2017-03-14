@@ -284,9 +284,11 @@ class SmartFrigDeviceMngr {
      **************************************************************************************/
     function createDev() {
         local info = {"deviceId" : deviceID, "deviceInfo" : _deviceInfo, "metadata" : _meta};
-        _predix.createAsset(DEVICE_TYPE_ID, deviceID, info, function(error, response) {
-            if (error != null) {
-                server.error(error);
+        _predix.createAsset(DEVICE_TYPE_ID, deviceID, info, function(status, errMessage, response) {
+            if (status != PREDIX_STATUS.SUCCESS) {
+                if (errMessage != null) {
+                    server.error(errMessage);
+                }
                 return;
             }
             deviceConfigured = true;
@@ -481,12 +483,13 @@ class Application {
      * predixResponseHandler
      * Returns: null
      * Parameters:
-     *      err : string/null - error message
-     *      res : table - response table
+     *      status : string/null - status of the Predix library method call
+     *      errMessage : string/null - error details, if any
+     *      resp : table - response table
      **************************************************************************************/
-    function predixResponseHandler(err, res) {
-        if (err) server.error(err);
-        if (res.statuscode >= 200 && res.statuscode < 300) {
+    function predixResponseHandler(status, errMessage, resp) {
+        if (errMessage) server.error(errMessage);
+        if (status == PREDIX_STATUS.SUCCESS) {
             server.log("Predix request successful.");
         }
     }

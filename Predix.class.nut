@@ -46,12 +46,15 @@
 //     If the callback is provided, it is executed when a response is received
 //     and the operation is completed, successfully or not.
 //     The callback function has signature:
-//         cb(error, response), where
-//             error : string
-//                 Error message (if the operation has been failed)
-//                 or null (no error occured, the operation is successfull).
+//         cb(status, errMessage, response), where
+//             status : int
+//                 Status of the library method call, one of the PREDIX_STATUS
+//                 enum values
+//             errMessage : string
+//                 error details, null if status is PREDIX_STATUS.SUCCESS
 //             response : table
-//                 Response received as a reply from the Predix platform.
+//                 HTTP response received as a reply from the Predix platform, 
+//                 can be null.
 //                 It contains the following keys and values:
 //                     statuscode : HTTP status code
 //                     headers    : table of returned HTTP headers
@@ -59,17 +62,27 @@
 //
 // Dependencies
 //     Promise Library
- 
-// Predix REST API error messages
-const PREDIX_INVALID_REQUEST_ERROR = "Error: Invalid Request";
-const PREDIX_INVALID_AUTH_TOKEN_ERROR = "Error: Invalid Authentication Token";
-const PREDIX_MISSING_RESOURCE_ERROR = "Error: Resource does not exist";
-const PREDIX_PAYLOAD_TOO_LARGE = "Error: Payload Too Large";
-const PREDIX_INTERNAL_SERVER_ERROR = "Error: Internal Server Error";
-const PREDIX_UNEXPECTED_ERROR = "Error: Unexpected error";
+
+// Predix library operation status
+enum PREDIX_STATUS {
+    SUCCESS,
+    // the library detects an error, e.g. the library method is called with 
+    // invalid argument(s)
+    LIBRARY_ERROR,
+    // HTTP request to Predix services failed, the error details can be found in 
+    // callback response parameter
+    PREDIX_REQUEST_FAILED,
+    // Unexpected response from Predix services
+    PREDIX_UNEXPECTED_RESPONSE
+};
 
 // Internal Predix library constants
 const _PREDIX_TOKEN_RENEW_BEFORE_EXPIRY_SEC = 60;
+// Errors produced by the library
+const _PREDIX_WRONG_TIME_SERIES_INGEST_URL = "Data ingestion failed: non-HTTP timeSeriesIngestUrl is currently unsupported";
+const _PREDIX_UNEXPECTED_UAA_RESPONSE = "Unexpected response from Predix User Account and Authentication service";
+const _PREDIX_WRONG_EMPTY_ARGUMENT = "Non empty argument required";
+const _PREDIX_REQUEST_FAILED = "Predix request failed with status code:";
 
 class Predix {
     static VERSION = "1.0.0";
@@ -107,10 +120,15 @@ class Predix {
         _timeSeriesIngestUrl = timeSeriesIngestUrl;
         _timeSeriesZoneId = timeSeriesZoneId;
 
-        // check timeSeriesIngestUrl scheme
-        local scheme = timeSeriesIngestUrl.slice(0, timeSeriesIngestUrl.find(":"));
-        if (scheme == "https" || scheme == "http") {
-            _isHttpTimeSeriesIngest = true;
+        _validateNonEmpty(null, _uaaUrl, _clientId, _clientSecret, 
+            _assetUrl, _assetZoneId, _timeSeriesIngestUrl, _timeSeriesZoneId);
+
+        if (_timeSeriesIngestUrl != null) {
+            // check timeSeriesIngestUrl scheme
+            local scheme = _timeSeriesIngestUrl.slice(0, _timeSeriesIngestUrl.find(":"));
+            if (scheme == "https" || scheme == "http") {
+                _isHttpTimeSeriesIngest = true;
+            }
         }
     }
 
@@ -137,9 +155,12 @@ class Predix {
     //
     // Returns:                      Nothing
     function createAsset(assetType, assetId, assetInfo, cb = null) {
+        if (!_validateNonEmpty(cb, assetType, assetId)) {
+            return;
+        }
         // check access token, then
         // POST to <_assetUrl>/<assetType>
-        _accessCheckPromise().
+        _accessCheckPromise(cb).
             then(function(msg) {
                 if (!assetInfo) {
                     assetInfo = {};
@@ -150,13 +171,12 @@ class Predix {
                 req.sendasync(function(resp) {
                     _processResponse(resp, cb);
                 }.bindenv(this));
-            }.bindenv(this),
-            _handleError);
+            }.bindenv(this));
     }
     
     // Queries custom asset from Predix IoT platform. 
     // If the asset doesn't exist, the callback (if provided) is called with 
-    // error parameter = PREDIX_MISSING_RESOURCE_ERROR.
+    // status parameter = PREDIX_REQUEST_FAILED.
     // If the asset exists, the callback (if provided) is called with
     // error parameter = null.
     //
@@ -168,17 +188,19 @@ class Predix {
     //
     // Returns:                      Nothing
     function queryAsset(assetType, assetId, cb = null) {
+        if (!_validateNonEmpty(cb, assetType, assetId)) {
+            return;
+        }
         // check access token, then
         // GET to <_assetUrl>/<assetType>/<assetId>
-        _accessCheckPromise().
+        _accessCheckPromise(cb).
             then(function(msg) {
                 local url = format("%s/%s/%s", _assetUrl, assetType, assetId);
                 local req = http.get(url, _createHeaders(_assetZoneId));
                 req.sendasync(function(resp) {
                     _processResponse(resp, cb);
                 }.bindenv(this));
-            }.bindenv(this),
-            _handleError);
+            }.bindenv(this));
     }
     
     // Deletes custom asset from Predix IoT platform.
@@ -193,17 +215,19 @@ class Predix {
     //
     // Returns:                      Nothing
     function deleteAsset(assetType, assetId, cb = null) {
+        if (!_validateNonEmpty(cb, assetType, assetId)) {
+            return;
+        }
         // check access token, then
         // DELETE to <_assetUrl>/<assetType>/<assetId>
-        _accessCheckPromise().
+        _accessCheckPromise(cb).
             then(function(msg) {
                 local url = format("%s/%s/%s", _assetUrl, assetType, assetId);
                 local req = http.httpdelete(url, _createHeaders(_assetZoneId));
                 req.sendasync(function(resp) {
                     _processResponse(resp, cb);
                 }.bindenv(this));
-            }.bindenv(this),
-            _handleError);
+            }.bindenv(this));
     }
 
     // Ingests data to Predix IoT platform using Predix Time Series service.
@@ -222,17 +246,20 @@ class Predix {
     //
     // Returns:                      Nothing
     function ingestData(assetType, assetId, data, ts = null, cb = null) {
+        if (!_validateNonEmpty(cb, assetType, assetId, data)) {
+            return;
+        }
         // Predix Time Series service uses WebSocket protocol for data ingestion.
         // The current implementation requires external http-to-websocket proxy that
         // receives HTTP requests from the library and resends them to the Predix 
         // Time Series service through WebSocket
         if (!_isHttpTimeSeriesIngest) {
-            _handleError("ingestData failed: non-HTTP TimeSeries ingestion is currently unsupported");
+            _handleError(PREDIX_STATUS.LIBRARY_ERROR, _PREDIX_WRONG_TIME_SERIES_INGEST_URL, null, cb);
             return;
         }
         // check access token, then
         // POST to <_timeSeriesIngestUrl>
-        _accessCheckPromise().
+        _accessCheckPromise(cb).
             then(function(msg) {
                 if (!ts) {
                     ts = time();
@@ -254,19 +281,20 @@ class Predix {
                 req.sendasync(function(resp) {
                     _processResponse(resp, cb);
                 }.bindenv(this));
-            }.bindenv(this),
-            _handleError);
+            }.bindenv(this));
     }
 
     // -------------------- PRIVATE METHODS -------------------- //
 
     // Checks Predix UAA access token and recreates it if needed.
     //
-    // Parameters:          None
+    // Parameters:
+    //     cb : function    Function to execute when response received,
+    //                      the exact format is specified above
     //
     // Returns:             Promise that resolves when access token is successfully 
     //                      obtained, or rejects with an error
-    function _accessCheckPromise() {
+    function _accessCheckPromise(cb) {
         return Promise(function(resolve, reject) {
             if (_accessToken == null || _tokenRenewTime < time()) {
                 // Request new access token
@@ -280,21 +308,22 @@ class Predix {
                 local body = format("client_id=%s&grant_type=client_credentials", _clientId);
                 local req = http.post(url, headers, body);
                 req.sendasync(function(resp) {
-                    _processResponse(resp, function(err, resp) {
-                        if (err == null) {
+                    _processResponse(resp, function(status, errMessage, resp) {
+                        if (status == PREDIX_STATUS.SUCCESS) {
                             if ("access_token" in resp.body && "expires_in" in resp.body) {
                                 _accessToken = resp.body["access_token"];
                                 _tokenRenewTime = time() + resp.body["expires_in"] - _PREDIX_TOKEN_RENEW_BEFORE_EXPIRY_SEC;
                                 return resolve("Access token created successfully");
                             }
-                            return reject("Unexpected response from Predix User Account and Authentication service");
+                            _handleError(PREDIX_STATUS.PREDIX_UNEXPECTED_RESPONSE, _PREDIX_UNEXPECTED_UAA_RESPONSE, resp, cb);
+                            return reject(_PREDIX_UNEXPECTED_UAA_RESPONSE);
                         }
                         else {
                             // we encountered an error
-                            return reject(err);
+                            _handleError(status, errMessage, resp, cb);
+                            return reject(errMessage);
                         }
                     }.bindenv(this));
-                    
                 }.bindenv(this));
             }
             else {
@@ -302,7 +331,7 @@ class Predix {
             }
         }.bindenv(this));
     }
-    
+
     // Creates HTTP headers for Predix Asset and Time Series services requests.
     //
     // Parameters:
@@ -326,58 +355,80 @@ class Predix {
     //
     // Returns:             Nothing
     function _processResponse(resp, cb) {
-        local status = resp.statuscode;
-        local err = (status < 200 || status >= 300) ? _getError(status) : null;
+        local statuscode = resp.statuscode;
+        local status = PREDIX_STATUS.SUCCESS;
+        local errMessage = null;
+        if (statuscode < 200 || statuscode >= 300) {
+            status = PREDIX_STATUS.PREDIX_REQUEST_FAILED;
+            errMessage = format("%s %i", _PREDIX_REQUEST_FAILED, statuscode);
+        }
         try {
             resp.body = (resp.body == "") ? {} : http.jsondecode(resp.body);
         } catch (e) {
-            if (err == null) err = e;
+            if (status == PREDIX_STATUS.SUCCESS) {
+                status = PREDIX_STATUS.PREDIX_UNEXPECTED_RESPONSE;
+                errMessage = e;
+            }
         }
-
         if (cb) {
             imp.wakeup(0, function() {
-                cb(err, resp);
-            });            
+                cb(status, errMessage, resp);
+            });
         }
     }
 
-    // Returns error message by status code.
+    // Validates that all of the optional parameters are not null or empty string
+    // or table. 
+    // Executes the callback with PREDIX_STATUS.LIBRARY_ERROR status if any of 
+    // the parameter is invalid.
     //
     // Parameters:
-    //     statusCode : integer      status code from response
+    //     cb : function          The callback function passed into the request 
+    //                            or null, the exact format is specified above
+    //     optional parameters    values to be validated
     //
-    // Returns:                      the corresponding error message
-    function _getError(statusCode) {
-        local err = null;
-        switch (statusCode) {
-            case 400:
-                err = PREDIX_INVALID_REQUEST_ERROR;
-                break;
-            case 401:
-                err = PREDIX_INVALID_AUTH_TOKEN_ERROR;
-                break;
-            case 404:
-                err = PREDIX_MISSING_RESOURCE_ERROR;
-                break;
-            case 413:
-                err = PREDIX_PAYLOAD_TOO_LARGE;
-                break;
-            case 500:
-                err = PREDIX_INTERNAL_SERVER_ERROR;
-                break;
-            default:
-                err = format("Status Code: %i, %s", statusCode, PREDIX_UNEXPECTED_ERROR);
+    // Returns:                   true if all of the optional parameters are valid, 
+    //                            false otherwise
+    function _validateNonEmpty(cb, ...) {
+        local param;
+        foreach (param in vargv) {
+            if (!param || typeof param == "string" && param.len() == 0 ||
+                typeof param == "table" && param.len() == 0) {
+                _handleError(PREDIX_STATUS.LIBRARY_ERROR, _PREDIX_WRONG_EMPTY_ARGUMENT, null, cb)
+                return false;
+            }
         }
-        return err;
+        return true;
     }
 
     // Handles an error occurred during the library methods execution
     //
     // Parameters:
+    //     status : int              status of the library method call, one of 
+    //                               the PREDIX_STATUS enum values
+    //     errMessage : string       error details
+    //     resp : table              HTTP response received as a reply from the 
+    //                               Predix platform, can be null.
+    //     cb : function             The callback function passed into the request 
+    //                               or null, the exact format is specified above
+    //
+    // Returns:                      Nothing
+    function _handleError(status, errMessage, resp, cb) {
+        _logError(errMessage);
+        if (cb) {
+            imp.wakeup(0, function() {
+                cb(status, errMessage, resp);
+            });            
+        }
+    }
+
+    // Logs an error occurred during the library methods execution
+    //
+    // Parameters:
     //     errMessage : string       the error message occurred
     //
     // Returns:                      Nothing
-    function _handleError(errMessage) {
+    function _logError(errMessage) {
         server.error("[Predix] " + errMessage);
     }
 }
