@@ -160,8 +160,7 @@ function setAssets(assetsRespBody) {
     //   }, ...
     // ]
     assets = {};
-    for (var i = 0; i < assetsRespBody.length; i++) {
-        var asset = assetsRespBody[i];
+    for (let asset of assetsRespBody) {
         if ('deviceId' in asset && 'deviceInfo' in asset) {
             assets[asset.deviceId] = asset.deviceInfo;
         }
@@ -190,15 +189,14 @@ function getTimeSeriesTagName(assetType, assetId, dataName) {
 
 // Queries TimeSeries data corresponded to the specified asset
 function queryAssetTimeSeriesData(assetType, assetId, assetInfo, onSuccess, onError) {
-    var i;
     var sensorsTags = [];
-    for (i = 0; i < assetInfo.sensors.length; i++) {
-        sensorsTags.push({'name': getTimeSeriesTagName(assetType, assetId, assetInfo.sensors[i])});
+    for (let sensor of assetInfo.sensors) {
+        sensorsTags.push({'name': getTimeSeriesTagName(assetType, assetId, sensor)});
     }
     var alertsTags = [];
-    for (i = 0; i < assetInfo.alerts.length; i++) {
+    for (let alert of assetInfo.alerts) {
         alertsTags.push({
-            'name' : getTimeSeriesTagName(assetType, assetId, assetInfo.alerts[i]),
+            'name' : getTimeSeriesTagName(assetType, assetId, alert),
             'order' : 'desc'
         });
     }
@@ -234,18 +232,16 @@ function queryTimeSeriesDataPromise(localPath, reqBody, dataType) {
                     return;
                 }
                 var data = {};
-                var values = respBody.tags;
-                for (var i = 0; i < values.length; i++) {
-                    if (!('name' in values[i] && 'results' in values[i])) {
+                for (let value of respBody.tags) {
+                    if (!('name' in value && 'results' in value)) {
                         reject("Unexpected response from Predix TimeSeries service");
                         return;
                     }
-                    if (values[i]['results'].length > 0 && values[i]['results'][0]['values'].length > 0) {
-                        var dataName = values[i]['name'];
+                    if (value['results'].length > 0 && value['results'][0]['values'].length > 0) {
+                        var dataName = value['name'];
                         dataName = dataName.substring(dataName.lastIndexOf('.') + 1);
                         var measurements = [];
-                        for (var j = 0; j < values[i]['results'][0]['values'].length; j++) {
-                            var measurement = values[i]['results'][0]['values'][j];
+                        for (let measurement of value['results'][0]['values']) {
                             measurements.push({'data' : measurement[1], 'ts' : measurement[0]});
                         }
                         data[dataName] = measurements;
@@ -287,8 +283,8 @@ function getAssetDataPage(data) {
     var source = FS.readFileSync(PATH.join(BASE_PATH, 'public/asset_data.html'));
     var $ = CHEERIO.load(source);
 
-    for (var i = 0; i < data.length; i++) {
-        var jsonData = JSON.parse(data[i]);
+    for (let d of data) {
+        var jsonData = JSON.parse(d);
         if ('deviceId' in jsonData) {
             $('#deviceId').html(jsonData['deviceId']);
         }
@@ -313,11 +309,10 @@ function getAssetDataPage(data) {
             var alertsExist = false;
             for (var key in alerts) {
                 alertsExist = true;
-                var measurements = alerts[key];
-                for (var j = 0; j < measurements.length; j++) {
+                for (let measurement of alerts[key]) {
                     alertsContent += '<tr>';
-                    alertsContent += '<td>' + new Date(measurements[j].ts).toUTCString() + ':</td>';
-                    alertsContent += '<td>' + measurements[j].data + '</td>';
+                    alertsContent += '<td>' + new Date(measurement.ts).toUTCString() + ':</td>';
+                    alertsContent += '<td>' + measurement.data + '</td>';
                     alertsContent += '</tr>';
                 }
                 alertsContent += '<tr class="gap"></tr>';
