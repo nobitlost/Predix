@@ -43,17 +43,17 @@
 //
 //     All requests to Predix platform are made asynchronously.
 //     Any method that sends a request has an optional callback parameter.
-//     If the callback is provided, it is executed when a response is received
-//     and the operation is completed, successfully or not.
-//     The callback function has signature:
+//     If the callback is provided, it is executed when the operation is
+//     completed (e.g. a response is received), successfully or not.
+//     The callback function has the following signature:
 //         cb(status, errMessage, response), where
 //             status : int
-//                 Status of the library method call, one of the PREDIX_STATUS
-//                 enum values
+//                 Status of the operation -
+//                 one of the PREDIX_STATUS enum values
 //             errMessage : string
-//                 error details, null if status is PREDIX_STATUS.SUCCESS
+//                 Error details, null if the status is PREDIX_STATUS.SUCCESS
 //             response : table
-//                 HTTP response received as a reply from the Predix platform, 
+//                 HTTP response received as a reply from Predix service, 
 //                 can be null.
 //                 It contains the following keys and values:
 //                     statuscode : HTTP status code
@@ -65,14 +65,17 @@
 
 // Predix library operation status
 enum PREDIX_STATUS {
+    // operation is completed successfully
     SUCCESS,
-    // the library detects an error, e.g. the library method is called with 
-    // invalid argument(s)
+    // the library detects an error, e.g. the library is wrongly initialized or 
+    // a method is called with invalid argument(s). The error details can be 
+    // found in the callback errMessage parameter
     LIBRARY_ERROR,
-    // HTTP request to Predix services failed, the error details can be found in 
-    // callback response parameter
+    // HTTP request to Predix service failed. The error details can be found in 
+    // the callback errMessage and response parameters
     PREDIX_REQUEST_FAILED,
-    // Unexpected response from Predix services
+    // Unexpected response from Predix service. The error details can be found in 
+    // the callback errMessage and response parameters
     PREDIX_UNEXPECTED_RESPONSE
 };
 
@@ -177,9 +180,9 @@ class Predix {
     
     // Queries custom asset from Predix IoT platform. 
     // If the asset doesn't exist, the callback (if provided) is called with 
-    // status parameter = PREDIX_REQUEST_FAILED.
+    // the status = PREDIX_STATUS.PREDIX_REQUEST_FAILED
     // If the asset exists, the callback (if provided) is called with
-    // error parameter = null.
+    // the status = PREDIX_STATUS.SUCCESS
     //
     // Parameters:
     //     assetType : string        Type of the asset
@@ -205,8 +208,8 @@ class Predix {
     }
     
     // Deletes custom asset from Predix IoT platform.
-    // If the asset doesn't exist, it does nothing and won't pass any error to 
-    // the callback.
+    // If the asset doesn't exist, the method does nothing and the callback
+    // (if provided) is called with the status = PREDIX_STATUS.SUCCESS
     //
     // Parameters:
     //     assetType : string        Type of the asset
