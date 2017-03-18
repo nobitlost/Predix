@@ -2,12 +2,12 @@
 
 The library allows to integrate your IMP agent code with [GE Predix IoT platform](https://www.predix.io). It uses Predix User Account and Authentication (UAA), Asset and Time Series services [REST API](https://www.predix.io/api).
 
-**To add this library to your project, add** `#require "predix.class.nut:1.0.0"` **to the top of your agent and/or device code.**
+**To add this library to your project, add** `#require "predix.class.nut:1.0.0"` **to the top of your agent code.**
 
 Before using this library you need to:
 - register an account at the Predix platform
 - add UAA, Assets, Time Series services to your account
-- create a client using UAA service instance
+- create and configure a client using UAA service instance
 - obtain URLs of UAA, Assets and Time Series service instances
 - obtain Zone-Id identifiers of Assets and Time Series service instances
 
@@ -84,7 +84,7 @@ info = { "description" : "My test sensor",
 predix.createAsset("my_sensor", "unique_id_1234", info, function(status, errMessage, response) {
     if (PREDIX_STATUS.SUCCESS == status) {
         // the asset is created/updated - continue application logic
-        }
+    }
     else {
         // log errMessage and response, if any
     }
@@ -99,10 +99,10 @@ predix.createAsset("my_sensor", "unique_id_1234", info, function(status, errMess
 predix.queryAsset("my_sensor", "unique_id_1234", function(status, errMessage, response) {
     if (PREDIX_STATUS.SUCCESS == status) {
         // the asset exists
-        }
+    }
     else if (PREDIX_STATUS.PREDIX_REQUEST_FAILED == status) {
         // the asset does not exist
-        }
+    }
     else {
         // unexpected/library error - log errMessage and response, if any
     }
@@ -117,7 +117,7 @@ If the specified asset does not exist, the method does nothing. *PREDIX_STATUS.S
 predix.deleteAsset("my_sensor", "unique_id_1234", function(status, errMessage, response) {
     if (PREDIX_STATUS.SUCCESS == status) {
         // the asset does not exist anymore - continue application logic
-        }
+    }
     else {
         // log errMessage and response, if any
     }
@@ -136,7 +136,7 @@ data = { "my_data" : "value_100" };
 predix.ingestData("my_sensor", "unique_id_1234", data, null, function(status, errMessage, response) {
     if (PREDIX_STATUS.SUCCESS == status) {
         // the data has been sent - continue application logic
-        }
+    }
     else {
         // log errMessage and response, if any
     }
