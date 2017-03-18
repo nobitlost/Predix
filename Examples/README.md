@@ -1,4 +1,4 @@
-#Electric Imp Smart Refrigerator
+# Electric Imp Smart Refrigerator
 
 Create a connected refrigerator using an Electric Imp and the Predix IoT platform.
 
