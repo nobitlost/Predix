@@ -22,7 +22,37 @@ For more information about Predix platform setup and usage - see [Predix Documen
 
 ## Library Usage
 
-### Creation an initialization
+The library API is specified [here](./Predix.class.nut)
+
+### Creation and initialization
+
+To instantiate this library you need to have:
+- UAA service instance URL
+- UAA service client id
+- UAA service client secret
+- Asset service instance URL
+- Asset service Zone-Id
+- Time Series service ingestion URL
+- Time Series service Zone-Id
+
+And pass these initialization data into the constructor.
+
+```squirrel
+#require "predix.class.nut:1.0.0"
+
+predix = Predix(<uaaUrl>, <clientId>, <clientSecret>, <assetUrl>, <assetZoneId>, 
+                <timeSeriesIngestUrl>, <timeSeriesZoneId>);
+```
+
+The constructor does not return any error. If all or part of the initialization data is not correct, it affects the library methods behavior. You receive an appropriate error when the library method cannot be executed due to the wrong initialization.
+
+**Note:**
+
+The current version of the library accepts only *http* or *https* Time Series service ingestion URL.
+
+Please check if the latest Predix platform supports data ingestion over *http* or *https* protocols.
+
+If not (e.g. Time Series service uses only WebSocket protocol for data ingestion), you need an external http-to-websocket proxy that receives HTTP(s) requests from the library and resends them to the Predix Time Series service through WebSocket.
 
 ### Assets management
 
