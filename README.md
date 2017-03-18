@@ -1,5 +1,3 @@
-**NOT COMPLETED YET**
-
 # Predix
 
 The library allows to integrate your IMP agent code with [GE Predix IoT platform](https://www.predix.io). It uses Predix User Account and Authentication (UAA), Asset and Time Series services [REST API](https://www.predix.io/api).
@@ -11,7 +9,7 @@ Before using this library you need to:
 - add UAA, Assets, Time Series services to your account
 - create a client using UAA service instance
 - obtain URLs of UAA, Assets and Time Series service instances
-- obtain Zone-Id identificators of Assets and Time Series service instances
+- obtain Zone-Id identifiers of Assets and Time Series service instances
 
 If you want to manage your connected device(s) and see the data from the device(s) in Predix, you may:
 - create a web application
@@ -74,7 +72,7 @@ The library provides methods to create/update, delete and query assets in the Pr
 
 To update or delete an asset or to send data it is not mandatory to create this asset using the library method. Your application may get an identifier of already created asset by an external way.
 
-**createAsset(assetType, assetId, assetInfo, cb)** method creates or updates a specified asset.
+**createAsset(assetType, assetId, assetInfo, callback)** method creates or updates a specified asset.
 
 If the specified asset does not exist, it is created and initialized by the provided properties (information).
 If the specified asset already exists, it is updated by the new provided properties. All old properties are deleted.
@@ -93,7 +91,7 @@ predix.createAsset("my_sensor", "unique_id_1234", info, function(status, errMess
 };
 ```
 
-**queryAsset(assetType, assetId, cb)** method checks if a specified asset exists.
+**queryAsset(assetType, assetId, callback)** method checks if a specified asset exists.
 
 *PREDIX_STATUS.PREDIX_REQUEST_FAILED* error code is used to inform that the asset does not exist.
 
@@ -111,9 +109,9 @@ predix.queryAsset("my_sensor", "unique_id_1234", function(status, errMessage, re
 };
 ```
 
-**deleteAsset(assetType, assetId, cb)** method deletes a specified asset.
+**deleteAsset(assetType, assetId, callback)** method deletes a specified asset.
 
-If the specified asset does not exist, the method does nothing. *PREDIX_STATUS.SUCCESS* is returned in the callback for the both cases - the asset is successfuly deleted or it has not existed.
+If the specified asset does not exist, the method does nothing. *PREDIX_STATUS.SUCCESS* is returned in the callback for the both cases - the asset is successfully deleted or it has not existed.
 
 ```squirrel
 predix.deleteAsset("my_sensor", "unique_id_1234", function(status, errMessage, response) {
@@ -128,9 +126,41 @@ predix.deleteAsset("my_sensor", "unique_id_1234", function(status, errMessage, r
 
 ### Data sending
 
+The library provides **ingestData(assetType, assetId, data, timestamp, callback)** method to send data to the Predix platform using Predix Time Series service.
+
+If the data measurement timestamp is not specified, the library inserts and sends the current timestamp.
+
+```squirrel
+data = { "my_data" : "value_100" };
+
+predix.ingestData("my_sensor", "unique_id_1234", data, null, function(status, errMessage, response) {
+    if (PREDIX_STATUS.SUCCESS == status) {
+        // the data has been sent - continue application logic
+        }
+    else {
+        // log errMessage and response, if any
+    }
+};
+```
+
 ### Errors processing
 
+All requests to the Predix platform are asynchronous.
 
+Every method that sends a request has an optional callback parameter which is called when the operation is completed, successfully or not.
+
+The callback provides:
+- *status* - a status of the operation (success or one of the error types)
+- *errMessage* - error details, in case of error
+- *response* - response from the Predix platform, if it has been received
+
+There are the following error types provided in *status*:
+
+- *PREDIX_STATUS.LIBRARY_ERROR* - it happens if the library has been wrongly initialized or invalid arguments are passed into the method. Usually it means an issue during an application development, it should be fixed during the application debugging and should not happen after the application deployment. The error details are provided in *errMessage*.
+
+- *PREDIX_STATUS.PREDIX_REQUEST_FAILED* - it's a possible error which may happen during a normal execution of application. Usually it means the application should normally proceed this error as a part of the application logic. The error details are provided in *errMessage* and in *response*.
+
+- *PREDIX_STATUS.PREDIX_UNEXPECTED_RESPONSE* - it means an unexpected behavior of the Predix platform (e.g. a response which does not correspond to the Predix REST API specification). The error details are provided in *errMessage* and in *response*.
 
 ## Examples
 
