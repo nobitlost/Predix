@@ -74,11 +74,6 @@ There are 2 items you need to copy down: **Client ID** and **Client Secret**. Th
 
 ![Predix UAA Client Details](http://i.imgur.com/YJVvwEb.png)
 
-Choose your client and add **Authorized Services**: click to **Choose Serivce** and choose your Asset Service, click again to 
-**Choose Serivce** and choose your Time Series Service. Then click **Submit**.
-
-![Predix UAA Client Config](http://i.imgur.com/9QdHglm.png)
-
 Go back to Predix account page in your web browser, click **Back to Space** and **View Catalog**.
 
 ![Predix account view catalog](http://i.imgur.com/A0xn5ZD.png)
@@ -90,7 +85,7 @@ Scroll to the **DATA MANAGEMENT** section and click **Asset** service.
 Scroll to the bottom and click **Subscribe** on Free plan.
 
 Choose your predix account login from **Org** drop-down list and **dev** from **Space** drop-down list, 
-select your UAA service form **User Account & Authentication** dropdown, enter **Service instance name**, 
+select your UAA service from **User Account & Authentication** dropdown, enter **Service instance name**, 
 e.g. "asset", choose **Free Service plan** and click **Create Service**.
 
 There is 1 item you need to copy down: **Asset Service instance name**. This will be used for further Predix account configuring.
@@ -103,17 +98,10 @@ Predix services catalog.
 There is 1 item you need to copy down: **Time Series Service instance name**. This will be used for further Predix account 
 configuring.
 
-Go back to your **UAA Service instance** page in your web browser.
-
-Choose your client and add **Authorized Services**: click to **Choose Serivce** and choose your **Asset Service instance name**, 
-click to **Choose Serivce** again and choose your **Time Series Service instance name** then click **Submit**.
-
-![Predix UAA client configure](http://i.imgur.com/9QdHglm.png)
-
 #### Install Predix web application
 
-The following steps are provided in detail for Mac OSX, you can use similar instructions for the different operating systems from
-the links below. 
+The following steps are provided in detail for Mac OSX, you can use similar instructions from
+the links below for the different operating systems. 
 
 **Install [Cloud Foundry CLI](https://github.com/cloudfoundry/cli#downloads) client**:
 
@@ -124,7 +112,6 @@ the links below.
     `brew install cloudfoundry/tap/cf-cli`
 
 ![CF install](http://i.imgur.com/zYn2ynh.png)
-![CF install](http://i.imgur.com/9Vo17G2.png)
 
 If your Internet connection requires a proxy server, configure your proxy settings as described in  
 [Predix Developing through a network proxy](https://www.predix.io/resources/tutorials/tutorial-details.html?tutorial_id=1565).
@@ -190,6 +177,27 @@ There are 5 items you need to copy down from the command output:
 **Web Application URL** which can be found in **VCAP_APPLICATION->application_uris**
 
 ![Predix WebApp URL](http://i.imgur.com/Fj35LbL.png)
+
+Go back to your **UAA Service instance** page in your web browser.
+
+Choose your client and add **Authorized Services**: click to **Choose Service** and choose your **Asset Service instance name**, 
+click to **Choose Service** again and choose your **Time Series Service instance name** then click **Submit**.
+
+![Predix UAA client configure](http://i.imgur.com/9QdHglm.png)
+
+Click to **Edit**
+
+![Predix UAA client configure](http://i.imgur.com/KY4UQHT.png)
+
+Enter `timeseries.zones.<Time Series Zone ID>.ingest` to Scopes field and press Enter.
+
+![Predix UAA edit](http://i.imgur.com/i9omNUc.png)
+
+Similarly enter `timeseries.zones.<Time Series Zone ID>.query` to Scopes field,
+enter `timeseries.zones.<Time Series Zone ID>.ingest` and `timeseries.zones.<Time Series Zone ID>.query` to Authorities field 
+and click **Save**.
+
+![Predix UAA edit](http://i.imgur.com/S8gzk7Z.png)
 
 ### Step 3 - Connect your Electric Imp to the Internet
 
