@@ -70,7 +70,7 @@ Click **+ Create Client**
 Enter **Client ID**, e.g. "client", make sure **client_credentials** check box is checked, enter and confirm **Client Secret** 
 and click **Save**.
 
-There are 2 items you need to copy down: **Client ID** and **Client Secret**. These will be used for Predix Web Application configuring.
+There are 2 items you need to copy down: **Client ID** and **Client Secret**. These will be used for Predix Web Application configuring and the demo agent code initialization.
 
 ![Predix UAA Client Details](http://i.imgur.com/YJVvwEb.png)
 
@@ -238,7 +238,7 @@ In the pop-up enter the following information:
 2. Select the checkbox next to your device ID, this assigns your device to this code model
 3. Click **Create Model** button
 
-Copy and paste the [Electric Imp's Predix Smart Refrigerator example code @TODO: fix link](https://github.com/electricimp/Predix/tree/master/Examples/SmartRefrigerator) into the agent and device coding windows.  The agent.nut file should go in the agent coding window, the device.nut file in the device coding window.
+Copy and paste the [Electric Imp's Predix Smart Refrigerator example code @TODO: fix link](https://github.com/electricimp/Predix/tree/master/Examples/SmartRefrigerator) into the agent and device coding windows.  The SmartRefrigerator_Predix.agent.nut file should go in the agent coding window, the SmartRefrigerator_Predix.device.nut file in the device coding window.
 
 ![IDE code windows](http://i.imgur.com/yiCmQZu.png)
 
