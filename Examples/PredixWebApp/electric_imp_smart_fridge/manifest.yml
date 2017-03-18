@@ -3,7 +3,7 @@
 # http://opensource.org/licenses/MIT
 
 applications:
-  - name: electric_imp_smart_fridge
+  - name: <YOUR APPLICATION NAME>
     memory: 256M
     buildpack: nodejs_buildpack
     command: node electric_imp_smart_fridge.js

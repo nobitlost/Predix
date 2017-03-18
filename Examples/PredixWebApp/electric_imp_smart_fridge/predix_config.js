@@ -18,6 +18,7 @@ var config = {
     assetZoneId : null,
     timeSeriesQueryHostName : null,
     timeSeriesZoneId : null,
+    timeSeriesIngestUrl : null,
     initializationError : null
 };
 
@@ -38,6 +39,7 @@ function readEnvVars() {
         var timeSeriesQuery = services['predix-timeseries'][0].credentials.query;
         config.timeSeriesQueryHostName = URL.parse(timeSeriesQuery.uri).hostname;
         config.timeSeriesZoneId = timeSeriesQuery['zone-http-header-value'];
+        config.timeSeriesIngestUrl = services['predix-timeseries'][0].credentials.ingest.uri;
     }
     catch (e) {
         config.initializationError = e.message;
