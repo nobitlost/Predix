@@ -182,7 +182,14 @@ class Predix {
     // If the asset doesn't exist, the callback (if provided) is called with 
     // the status = PREDIX_STATUS.PREDIX_REQUEST_FAILED
     // If the asset exists, the callback (if provided) is called with
-    // the status = PREDIX_STATUS.SUCCESS
+    // the status = PREDIX_STATUS.SUCCESS. The Predix asset entity is provided
+    // in callback response.body in the format:
+    // [
+    //   { "uri" : "/<assetType>/<assetId>", 
+    //     "<asset_property_name>" : <value>,
+    //     ...
+    //   }
+    // ]
     //
     // Parameters:
     //     assetType : string        Type of the asset
