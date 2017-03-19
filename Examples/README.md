@@ -16,7 +16,6 @@ Below are detailed steps on how to connect an Electric Imp with environmental se
 
 ### Accounts
   - An [Electric Imp developer account](https://ide.electricimp.com/login)
-  - The Electric Imp BlinkUp app ([iOS](https://itunes.apple.com/us/app/electric-imp/id547133856) or [Android](https://play.google.com/store/apps/details?id=com.electricimp.electricimp))
   - A [Predix account](https://www.predix.io/registration/)
   
 ### Hardware
@@ -27,6 +26,7 @@ And if you want to install the board into a fridge:
   - 3 AA Batteries
   
 ### Software
+ - The Electric Imp BlinkUp app ([iOS](https://itunes.apple.com/us/app/electric-imp/id547133856) or [Android](https://play.google.com/store/apps/details?id=com.electricimp.electricimp))
   - [Agent code](./SmartRefrigerator_Predix.agent.nut)
   - [Device code](./SmartRefrigerator_Predix.device.nut)
   - [Predix web application](./PredixWebApp/electric_imp_smart_fridge) files
