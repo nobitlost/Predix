@@ -2,7 +2,7 @@
 
 The library allows to integrate your IMP agent code with [GE Predix IoT platform](https://www.predix.io). It uses Predix User Account and Authentication (UAA), Asset and Time Series services [REST API](https://www.predix.io/api).
 
-**To add this library to your project, add** `#require "predix.class.nut:1.0.0"` **to the top of your agent code.**
+**To add this library to your project, add** `#require "Predix.class.nut:1.0.0"` **to the top of your agent code.**
 
 Before using this library you need to:
 - register an account at the Predix platform
@@ -36,7 +36,7 @@ To instantiate this library you need to have:
 And pass these initialization data into the constructor.
 
 ```squirrel
-#require "predix.class.nut:1.0.0"
+#require "Predix.class.nut:1.0.0"
 
 predix = Predix(<uaaUrl>, <clientId>, <clientSecret>, <assetUrl>, <assetZoneId>, 
                 <timeSeriesIngestUrl>, <timeSeriesZoneId>);
@@ -88,10 +88,12 @@ predix.createAsset("my_sensor", "unique_id_1234", info, function(status, errMess
     else {
         // log errMessage and response, if any
     }
-};
+}.bindenv(this));
 ```
 
 **queryAsset(assetType, assetId, callback)** method checks if a specified asset exists.
+
+If the specified asset exists (*PREDIX_STATUS.SUCCESS* is reported), the asset properties can be found in *response.body* argument of the callback.
 
 *PREDIX_STATUS.PREDIX_REQUEST_FAILED* error code is used to inform that the asset does not exist.
 
@@ -106,7 +108,7 @@ predix.queryAsset("my_sensor", "unique_id_1234", function(status, errMessage, re
     else {
         // unexpected/library error - log errMessage and response, if any
     }
-};
+}.bindenv(this));
 ```
 
 **deleteAsset(assetType, assetId, callback)** method deletes a specified asset.
@@ -121,7 +123,7 @@ predix.deleteAsset("my_sensor", "unique_id_1234", function(status, errMessage, r
     else {
         // log errMessage and response, if any
     }
-};
+}.bindenv(this));
 ```
 
 ### Data sending
@@ -140,7 +142,7 @@ predix.ingestData("my_sensor", "unique_id_1234", data, null, function(status, er
     else {
         // log errMessage and response, if any
     }
-};
+}.bindenv(this));
 ```
 
 ### Errors processing
