@@ -7,15 +7,31 @@ Skill Level: Beginner
 
 Below are detailed steps on how to connect an Electric Imp with environmental sensors to the Predix Platform in order to visualize and monitor your refrigerator in real time.
 
-## Ingredients
+## Ingredients - what you need
 
- 1. Your WIFI *network name* and *password*
- 2. A computer with a web browser
- 3. Smartphone with the Electric Imp app ([iOS](https://itunes.apple.com/us/app/electric-imp/id547133856) or [Android](https://play.google.com/store/apps/details?id=com.electricimp.electricimp))
- 4. A free [Electric Imp developer account](https://ide.electricimp.com/login)
- 5. A [Predix account](https://www.predix.io/registration/)
- 6. An Electric Imp Explorer kit - purchase from [Amazon](https://www.amazon.com/dp/B01N47J61L/ref=cm_sw_r_cp_ep_dp_bzBwybD8TBQ36)
- 7. Three AA batteries
+### General
+  - Your WIFI *network name* and *password*
+  - A smartphone (iOS or Android)
+  - A computer with a web browser
+
+### Accounts
+  - An [Electric Imp developer account](https://ide.electricimp.com/login)
+  - The Electric Imp BlinkUp app ([iOS](https://itunes.apple.com/us/app/electric-imp/id547133856) or [Android](https://play.google.com/store/apps/details?id=com.electricimp.electricimp))
+  - A [Predix account](https://www.predix.io/registration/)
+  
+### Hardware
+  - An Electric Imp Explorer kit - purchase from [Amazon](https://www.amazon.com/dp/B01N47J61L/ref=cm_sw_r_cp_ep_dp_bzBwybD8TBQ36)
+
+And if you want to install the board into a fridge:
+
+  - 3 AA Batteries
+  
+### Software
+  - [Agent code](./SmartRefrigerator_Predix.agent.nut)
+  - [Device code](./SmartRefrigerator_Predix.device.nut)
+  - [Predix web application](./PredixWebApp/electric_imp_smart_fridge) files
+  - [Cloud Foundry CLI](https://github.com/cloudfoundry/cli)
+  - [CF Predix](https://github.com/PredixDev/cf-predix)
 
 ## Step-by-step
 
@@ -44,7 +60,7 @@ Scroll to the bottom and click **Subscribe** on Free plan.
 
 ![Predix UAA Subscribe](http://i.imgur.com/DjDAkOk.png)
 
-Choose your predix account login from **Org** drop-down list and **dev** from **Space** drop-down list, 
+Choose your predix account login from **Org** drop-down list, **dev** from **Space** drop-down list, 
 enter **Service instance name**, e.g. "uaa", choose **Free** Service plan, enter any **Admin client secret** 
 and click **Create Service**.
 
@@ -84,8 +100,8 @@ Scroll to the **DATA MANAGEMENT** section and click **Asset** service.
 
 Scroll to the bottom and click **Subscribe** on Free plan.
 
-Choose your predix account login from **Org** drop-down list and **dev** from **Space** drop-down list, 
-select your UAA service from **User Account & Authentication** dropdown, enter **Service instance name**, 
+Choose your predix account login from **Org** drop-down list, **dev** from **Space** drop-down list, 
+select your UAA service from **User Account & Authentication** drop-down, enter **Service instance name**, 
 e.g. "asset", choose **Free Service plan** and click **Create Service**.
 
 There is 1 item you need to copy down: **Asset Service instance name**. This will be used for further Predix account configuring.
@@ -131,8 +147,9 @@ your registration welcome Predix email. Enter the Email and Password of your Pre
 
 ![CF Predix login](http://i.imgur.com/5HgcTSl.png)
 
-**Download or clone Electric Imp's [Predix Github repository @TODO: fix link](https://github.com/electricimp/Predix/tree/master/Examples/SmartRefrigerator)**.
-Open *PredixWebApp/electric_imp_smart_fridge/manifest.yml* file in a text editor.
+**Download** [Electric Imp's Predix web application](./PredixWebApp/electric_imp_smart_fridge) files. 
+
+Open [web application manifest.yml](./PredixWebApp/electric_imp_smart_fridge/manifest.yml) file in a text editor.
 
 Modify **services** and **env** section with the values obtained during the Predix account configuration steps: 
 
@@ -159,7 +176,7 @@ When the installation completed successfully, run command
 
 `cf env <your_web_application_name>`
 
-There are 5 items you need to copy down from the command output:
+There are 5 items you need to copy down from the command output. These will be used for further Predix account configuring and the demo agent code initialization.
 
 **Asset URL** and **Asset Zone ID** which can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** and 
 **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
@@ -238,7 +255,8 @@ In the pop-up enter the following information:
 2. Select the checkbox next to your device ID, this assigns your device to this code model
 3. Click **Create Model** button
 
-Copy and paste the [Electric Imp's Predix Smart Refrigerator example code @TODO: fix link](https://github.com/electricimp/Predix/tree/master/Examples/SmartRefrigerator) into the agent and device coding windows.  The SmartRefrigerator_Predix.agent.nut file should go in the agent coding window, the SmartRefrigerator_Predix.device.nut file in the device coding window.
+Copy and paste [Predix Smart Refrigerator agent code](./SmartRefrigerator_Predix.agent.nut) and [Predix Smart Refrigerator device code](./SmartRefrigerator_Predix.device.nut)
+into the agent and device coding windows.
 
 ![IDE code windows](http://i.imgur.com/yiCmQZu.png)
 
@@ -256,7 +274,7 @@ Click **Build and Run** to save and launch the code
 
 Remember your **device ID** specified in the bottom left corner. It can be useful on the next step.
 
-### 5.  Refrigerator data visualization
+### Step 5 - Refrigerator data visualization
 
 Open your **Web Application URL** prefixed by "https://" in your web browser. 
 
@@ -266,13 +284,13 @@ On the device page you can see the current temerature and humidity values, door 
 
 ![Predix Web App](http://i.imgur.com/SU2du1n.png)
 
-### 6.  Install the Imp in your Refrigerator
+### Step 6 - Install the Imp in your Refrigerator
 
 Open your refrigerator and place the Imp on a shelf in the door.
 
 ![Imp In Fridge](http://i.imgur.com/z5llZBg.png)
 
-### 7.  Optional Improvements
+### Step 7 - Optional Improvements
 
 Your refrigerator is now connected to the internet. As you begin to gather data for your refrigerator you should adjust the static variables in your device SmartFridgeApp class to further customize your integration.
 
