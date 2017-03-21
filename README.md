@@ -4,7 +4,7 @@ The library allows to integrate your IMP agent code with [GE Predix IoT platform
 
 **To add this library to your project, add** `#require "Predix.class.nut:1.0.0"` **to the top of your agent code.**
 
-**This library depends on the Promise library. You need to include the latest version of [Electric Imp Promise library](https://github.com/electricimp/Promise) to the top of your agent code as well**
+**This library depends on the Promise library. You need to include the latest version of [Electric Imp Promise library](https://github.com/electricimp/Promise) to the top of your agent code as well.**
 
 For example:
 ```squirrel
