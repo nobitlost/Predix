@@ -2,7 +2,12 @@
 
 The library allows to integrate your IMP agent code with [GE Predix IoT platform](https://www.predix.io). It uses Predix User Account and Authentication (UAA), Asset and Time Series services [REST API](https://www.predix.io/api).
 
-**To add this library to your project, add** `#require "Predix.class.nut:1.0.0"` **to the top of your agent code.**
+**To add this library to your project, add** 
+```squirrel
+#require "promise.class.nut:3.0.0"
+#require "Predix.class.nut:1.0.0"
+```
+**to the top of your agent code. The library depends on Promise library. You need to include the latest version of [Electric Imp Promise library](https://github.com/electricimp/Promise) to the top of your agent code**
 
 Before using this library you need to:
 - register an account at the Predix platform

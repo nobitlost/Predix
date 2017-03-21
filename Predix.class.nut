@@ -2,9 +2,6 @@
 // This file is licensed under the MIT License
 // http://opensource.org/licenses/MIT
 
-// Utility Libraries
-#require "promise.class.nut:3.0.0"
-
 // Predix Class:
 //     Provides an integration with GE Predix IoT platform using 
 //     Predix User Account and Authentication (UAA), Asset and Time Series
@@ -129,9 +126,12 @@ class Predix {
 
         if (_timeSeriesIngestUrl != null) {
             // check timeSeriesIngestUrl scheme
-            local scheme = _timeSeriesIngestUrl.slice(0, _timeSeriesIngestUrl.find(":"));
-            if (scheme == "https" || scheme == "http") {
-                _isHttpTimeSeriesIngest = true;
+            local index = _timeSeriesIngestUrl.find(":");
+            if (index != null) {
+                local scheme = _timeSeriesIngestUrl.slice(0, index);
+                if (scheme == "https" || scheme == "http") {
+                    _isHttpTimeSeriesIngest = true;
+                }
             }
         }
     }
@@ -166,12 +166,10 @@ class Predix {
         // POST to <_assetUrl>/<assetType>
         _accessCheckPromise(cb).
             then(function(msg) {
-                if (!assetInfo) {
-                    assetInfo = {};
-                }
-                assetInfo["uri"] <- format("/%s/%s", assetType, assetId);
+                local info = !assetInfo ? {} : clone(assetInfo);
+                info["uri"] <- format("/%s/%s", assetType, assetId);
                 local url = format("%s/%s", _assetUrl, assetType);
-                local req = http.post(url, _createHeaders(_assetZoneId), http.jsonencode([assetInfo]));
+                local req = http.post(url, _createHeaders(_assetZoneId), http.jsonencode([info]));
                 req.sendasync(function(resp) {
                     _processResponse(resp, cb);
                 }.bindenv(this));
