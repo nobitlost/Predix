@@ -177,38 +177,6 @@ There are the following error types provided in *status*:
 
 - [Smart Refrigerator demo: agent code](./Examples/SmartRefrigerator_Predix.agent.nut)
 
-## Testing
-
-**TBD**
-
-Repository contains [impUnit](https://github.com/electricimp/impUnit) tests and a configuration for [impTest](https://github.com/electricimp/impTest) tool.
-
-### TL;DR
-
-```bash
-cp .imptest .imptest-local
-nano .imptest-local # edit device/model
-imptest test -c .imptest-local
-```
-
-### Running Tests
-
-Tests can be launched with:
-
-```bash
-imptest test
-```
-
-By default configuration for the testing is read from [.imptest](https://github.com/electricimp/impTest/blob/develop/docs/imptest-spec.md).
-
-To run test with your settings (for example while you are developing), create your copy of **.imptest** file and name it something like **.imptest.local**, then run tests with:
-
- ```bash
- imptest test -c .imptest.local
- ```
-
-Tests will run with any imp.
-
 ## License
 
 The Promise class is licensed under the [MIT License](./LICENSE).
