@@ -30,12 +30,18 @@
 //     Before using this library you need to:
 //         - register an account at the Predix platform
 //         - add UAA, Assets, Time Series services to your account
-//         - create a client using UAA service instance
-//         - deploy a web application to the Predix platform
-//         - bind UAA, Assets and Time Series service instances to a web application
+//         - create and configure a client using UAA service instance
 //         - obtain URLs of UAA, Assets and Time Series service instances
 //         - obtain Zone-Id identificators of Assets and Time Series service 
 //           instances
+//
+//     If you want to manage your connected device(s) and see the data from
+//     the device(s) in Predix, you may:
+//         - create a web application
+//         - deploy the web application to the Predix platform
+//         - bind UAA, Assets and Time Series services (and any other Predix services
+//           your application uses) to the web application
+//
 //     For more information see Predix Documentation https://www.predix.io/docs
 //
 //     To instantiate this library you need to have:
@@ -47,11 +53,11 @@
 //         - TimeSeries service ingestion URL,
 //         - TimeSeries service Zone-Id.
 //
-//     EI device or any other "thing" is represented in the Predix platform as an 
-//     asset. Every asset is uniquely identified by a pair <assetType>/<assetId>.
-//     Usually <assetType> is a type of assets, type of devices, type of "things".
-//     It is recommended that you name your <assetType>(s) as related to your
-//     application, company, use-case, type of your devices and/or sensors, etc.
+//     EI device is represented in the Predix platform as an asset.
+//     Every asset is uniquely identified in the scope of one Predix account
+//     by a pair <assetType>/<assetId>.
+//     Usually <assetType> is a type of device, type of sensor/actuator,
+//     your application or use case name or anything else you want.
 //     <assetId> is a unique identifier in the scope of a particular <assetType>.
 //     <assetId> may have hierarchical naming structure inside or just to be a
 //     unique number (e.g. device id).
@@ -78,7 +84,8 @@
 //                     body       : returned HTTP body decoded from JSON (if any)
 //
 // Dependencies
-//     Promise Library
+//     Promise Library - you need to include the latest version
+//     of the Promise library to the top of your agent code.
 
 // Predix library operation status
 enum PREDIX_STATUS {
@@ -200,7 +207,7 @@ class Predix {
     // If the asset doesn't exist, the callback (if provided) is called with 
     // the status = PREDIX_STATUS.PREDIX_REQUEST_FAILED
     // If the asset exists, the callback (if provided) is called with
-    // the status = PREDIX_STATUS.SUCCESS. The Predix asset entity is provided
+    // the status = PREDIX_STATUS.SUCCESS. The asset properties are provided
     // in callback response.body in the format:
     // [
     //   { "uri" : "/<assetType>/<assetId>", 
@@ -269,7 +276,8 @@ class Predix {
     //     data : table              Data to be ingested to Predix Time Series,
     //                               table formatted as {"<data_name>" : "<data_value>", ...}
     //     ts (optional) : integer   Data measurement timestamp in seconds since epoch.
-    //                               If not specified, the current timestamp is used
+    //                               If not specified, the current timestamp is inserted and
+    //                               sent by the library.
     //     cb (optional) : function  Function to execute when response received,
     //                               the exact format is specified above 
     //
