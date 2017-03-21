@@ -44,6 +44,7 @@ To instantiate this library you need to have:
 And pass these initialization data into the constructor.
 
 ```squirrel
+#require "promise.class.nut:3.0.0"
 #require "Predix.class.nut:1.0.0"
 
 predix = Predix(<uaaUrl>, <clientId>, <clientSecret>, <assetUrl>, <assetZoneId>, 
