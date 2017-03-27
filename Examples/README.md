@@ -83,8 +83,7 @@ Click **+ Create Client**
 
 ![Predix UAA Create Client](http://i.imgur.com/sV4Xcf5.png)
 
-Enter **Client ID**, e.g. "client", make sure **client_credentials** check box is checked, enter and confirm **Client Secret** 
-and click **Save**.
+Enter **Client ID**<a id=client-id>, e.g. "client", make sure **client_credentials** check box is checked, enter and confirm **Client Secret**<a id=client-secret> and click **Save**.
 
 There are 2 items you need to copy down: **Client ID** and **Client Secret**. These will be used for Predix Web Application configuring and the demo agent code initialization.
 
@@ -178,16 +177,16 @@ When the installation completed successfully, run command
 
 There are 5 items you need to copy down from the command output. These will be used for further Predix account configuring and the demo agent code initialization.
 
-**Asset URL** and **Asset Zone ID** which can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** and 
+**Asset URL**<a id=asset-url> and **Asset Zone ID**<a id=asset-zone-id> which can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** and 
 **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
 
 ![Predix Asset info](http://i.imgur.com/3voLJqs.png)
 
-**Time Series Zone ID** which can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
+**Time Series Zone ID**<a id=time-series-zone-id> which can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
 
 ![Predix TimeSeries info](http://i.imgur.com/eM12iWk.png)
 
-**UAA URL** which can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
+**UAA URL**<a id=uaa-url> which can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
 
 ![Predix TimeSeries info](http://i.imgur.com/EZHWB8b.png)
 
@@ -260,9 +259,9 @@ into the agent and device coding windows.
 
 ![IDE code windows](http://i.imgur.com/yiCmQZu.png)
 
-Scroll to the bottom of the agent code to find *Predix account constants* variables. Enter your **UAA URL**, **Client ID**, **Client secret**, **Asset URL**, **Asset Zone ID**, and **Time Series Zone ID** from **Step 2** into the corresponding variables.
+Scroll to the bottom of the agent code to find *Predix account constants* variables. Enter your [**UAA URL**](#uaa-url), [**Client ID**](#client-id), [**Client secret**](#client-secret), [**Asset URL**](#asset-url), [**Asset Zone ID**](#asset-zone-id), and [**Time Series Zone ID**](#time-series-zone-id) from **Step 2** into the corresponding variables.
 
-Enter your **Web Application URL** prefixed by "https://" and postfixed by "/ingest_data" to the **TIME_SERIES_INGEST_URL** value. 
+Enter your **Web Application URL** prefixed by "https://" and postfixed by "/ingest_data" to the [**TIME_SERIES_INGEST_URL**](#time-series-ingest-url) value. 
 
 It should look like 
 
