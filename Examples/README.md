@@ -190,7 +190,7 @@ There are 5 items you need to copy down from the command output. These will be u
 
 ![Predix TimeSeries info](http://i.imgur.com/EZHWB8b.png)
 
-**Web Application URL** which can be found in **VCAP_APPLICATION->application_uris**
+**Web Application URL**<a id=web-application-url> which can be found in **VCAP_APPLICATION->application_uris**
 
 ![Predix WebApp URL](http://i.imgur.com/Fj35LbL.png)
 
