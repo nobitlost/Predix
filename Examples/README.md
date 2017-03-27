@@ -261,7 +261,7 @@ into the agent and device coding windows.
 
 Scroll to the bottom of the agent code to find *Predix account constants* variables. Enter your [**UAA URL**](#uaa-url), [**Client ID**](#client-id), [**Client secret**](#client-secret), [**Asset URL**](#asset-url), [**Asset Zone ID**](#asset-zone-id), and [**Time Series Zone ID**](#time-series-zone-id) from **Step 2** into the corresponding variables.
 
-Enter your **Web Application URL** prefixed by "https://" and postfixed by "/ingest_data" to the [**TIME_SERIES_INGEST_URL**](#time-series-ingest-url) value. 
+For the **TIME_SERIES_INGEST_URL** copy the [**WEB_APPLICATION_URL**](#web-application-url) value prefixed by "https://" and postfixed by "/ingest_data". 
 
 It should look like 
 
@@ -275,7 +275,7 @@ Remember your **device ID** specified in the bottom left corner. It can be usefu
 
 ### Step 5 - Refrigerator data visualization
 
-Open your **Web Application URL** prefixed by "https://" in your web browser. 
+Open your [**Web Application URL**](#web-application-url) prefixed by "https://" in your web browser. 
 
 Select your device ID from drop down list and click **Sensors Data**.
 
