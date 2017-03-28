@@ -145,7 +145,7 @@ the links below for the different operating systems.
   - In a terminal window change directory to electric_imp_smart_fridge of Electric Imp's Predix SmartRefrigerator sample
   - Run command
 
-  `cf push -f manifest.yml`
+    `cf push -f manifest.yml`
 
   ![Predix WebApp installation](http://i.imgur.com/uxnnWwZ.png)
   - If the command fails with *Server error, status code: 400, error code: 210003, message: The host is taken: ...*
@@ -156,17 +156,21 @@ the links below for the different operating systems.
 - When the application launch has completed successfully, run the command below to get your application's environment variables. The output will be used for further Predix account configuring and the demo agent code initialization.
   - Run command
 
-  `cf env <your_web_application_name>`
+    `cf env <your_web_application_name>`
 
   - There are 5 items you need to copy down from the command output
 
     1 Your **Asset URL**<a id=asset-url> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** value
+
     2 Your **Asset Zone ID**<a id=asset-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
     ![Predix Asset info](http://i.imgur.com/3voLJqs.png)
+
     3 Your **Time Series Zone ID**<a id=time-series-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
     ![Predix TimeSeries info](http://i.imgur.com/eM12iWk.png)
+
     4 Your **UAA URL**<a id=uaa-url> can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
     ![Predix TimeSeries info](http://i.imgur.com/EZHWB8b.png)
+
     5 Your **Web Application URL**<a id=web-application-url> can be found in **VCAP_APPLICATION->application_uris**
     ![Predix WebApp URL](http://i.imgur.com/Fj35LbL.png)
 
@@ -194,7 +198,7 @@ the links below for the different operating systems.
 #### Set Up Hardware
 
 1. Plug the Imp001 into the Explorer Kit Board
-3. Power up your Imp with the AA batteries.
+2. Power up your Imp with the AA batteries.
 
 ![Explorer Kit](http://i.imgur.com/6JssX74.png)
 
@@ -216,45 +220,42 @@ For more information on BlinkUp visit the Electric Imp [Dev Center](https://elec
 
 ### Step 4 - Connect your Electric Imp to Predix IoT
 
-In your web browser log into the [Electric Imp IDE](https://ide.electricimp.com/login) using your Electric Imp developer account.
-
-Click the **+** button to create a new model
-
+- In your web browser log into the [Electric Imp IDE](https://ide.electricimp.com/login) using your Electric Imp developer account.
+- Click the **+** button to create a new model
 ![Empty IDE](http://i.imgur.com/Ui7w8eG.png)
-
-In the pop-up enter the following information:
+- In the pop-up enter the following information:
 
 1. A name for your code model (ie Smart Refrigerator)
 2. Select the checkbox next to your device ID, this assigns your device to this code model
 3. Click **Create Model** button
 
-Copy and paste [Predix Smart Refrigerator agent code](./SmartRefrigerator_Predix.agent.nut) and [Predix Smart Refrigerator device code](./SmartRefrigerator_Predix.device.nut)
-into the agent and device coding windows.
-
+- Copy and paste [Predix Smart Refrigerator agent code](./SmartRefrigerator_Predix.agent.nut) and [Predix Smart Refrigerator device code](./SmartRefrigerator_Predix.device.nut) into the agent and device coding windows.
 ![IDE code windows](http://i.imgur.com/yiCmQZu.png)
 
-Scroll to the bottom of the agent code to find *Predix account constants* variables. Enter your [**UAA URL**](#uaa-url), [**Client ID**](#client-id), [**Client secret**](#client-secret), [**Asset URL**](#asset-url), [**Asset Zone ID**](#asset-zone-id), and [**Time Series Zone ID**](#time-series-zone-id) from **Step 2** into the corresponding variables.
+- Scroll to the bottom of the agent code to find *Predix account constants* variables.
+  - Enter the following values from **Step 2** into the corresponding variables:
+    - [**UAA URL**](#uaa-url)
+    - [**Client ID**](#client-id)
+    - [**Client secret**](#client-secret)
+    - [**Asset URL**](#asset-url)
+    - [**Asset Zone ID**](#asset-zone-id)
+    - [**Time Series Zone ID**](#time-series-zone-id)
+  - For the **TIME_SERIES_INGEST_URL** copy the [**WEB_APPLICATION_URL**](#web-application-url) value prefixed by "https://" and postfixed by "/ingest_data".
 
-For the **TIME_SERIES_INGEST_URL** copy the [**WEB_APPLICATION_URL**](#web-application-url) value prefixed by "https://" and postfixed by "/ingest_data".
+  It should look like
 
-It should look like
+  `const TIME_SERIES_INGEST_URL = "https://electricimp-smart-fridge.run.aws-usw02-pr.ice.predix.io/ingest_data";`
 
-`const TIME_SERIES_INGEST_URL = "https://electricimp-smart-fridge.run.aws-usw02-pr.ice.predix.io/ingest_data";`
-
-Click **Build and Run** to save and launch the code
-
+- Click **Build and Run** to save and launch the code
 ![IDE with code](http://i.imgur.com/lnoCtKR.png)
 
-Remember your **device ID** specified in the bottom left corner. It can be useful on the next step.
+Take note of your **device ID** specified in the bottom left corner. It can be useful on the next step.
 
 ### Step 5 - Refrigerator data visualization
 
-Open your [**Web Application URL**](#web-application-url) prefixed by "https://" in your web browser.
-
-Select your device ID from drop down list and click **Sensors Data**.
-
-On the device page you can see the current temerature and humidity values, door status and alerts over the past hour.
-
+- Open your [**Web Application URL**](#web-application-url) prefixed by "https://" in your web browser.
+- Select your device ID from drop down list and click **Sensors Data**.
+- On the device page you can see the current temerature and humidity values, door status and alerts over the past hour.
 ![Predix Web App](http://i.imgur.com/SU2du1n.png)
 
 ### Step 6 - Install the Imp in your Refrigerator
