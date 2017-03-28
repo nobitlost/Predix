@@ -73,7 +73,7 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
   - **UAA Service instance name**
   - **Admin client secret**
 
-- Click **Open Service instance**. You will be redirected to **UAA Service instance** page.
+- Click **Open Service instance**. You will be redirected to **UAA Service instance** page (usually a new tab).
 
 ![Predix UAA Open](http://i.imgur.com/8RK38LL.png)
 
@@ -98,7 +98,7 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
 
 ![Predix UAA Client Details](http://i.imgur.com/YJVvwEb.png)
 
-- Go back to Predix account page in your web browser
+- Go back to Predix account page in your web browser (the other Predix tab)
 - Click **Back to Space** and **View Catalog**
 
 ![Predix account view catalog](http://i.imgur.com/A0xn5ZD.png)
@@ -106,63 +106,64 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
 - Scroll to the **DATA MANAGEMENT** section and click **Asset** service
 
 ![Predix asset](http://i.imgur.com/WSG80E6.png)
-
+<a id=repeat-asset-steps>
 - Scroll to the bottom and click **Subscribe** on Free plan
 
 - Choose your predix account login from **Org** drop-down list
 - Choose **dev** from **Space** drop-down list
 - Select your UAA service from **User Account & Authentication** drop-down
-- Enter **Service instance name** e.g. "asset"
+- Enter **Service instance name**, e.g. "asset"
 - Choose **Free Service plan**
 - Click **Create Service**
+
+![Predix asset create](http://i.imgur.com/LOSi0yz.png)
+
 
 - There is 1 item you need to copy down. This will be used for further Predix account configuring.
   - **Asset Service instance name**
 
-![Predix asset create](http://i.imgur.com/LOSi0yz.png)
-
-Repeat the previous steps (related to **Asset** service) with **Time Series** service of **DATA MANAGEMENT** section from
-Predix services catalog.
-
-There is 1 item you need to copy down: **Time Series Service instance name**. This will be used for further Predix account
+- Scroll to the **DATA MANAGEMENT** section and click **Time Series** service
+- [Repeat the previous steps](#repeat-asset-steps) (related to **Asset** service)
+- There is 1 item you need to copy down. This will be used for further Predix account
 configuring.
+  - **Time Series Service instance name**
 
 #### Install Predix web application
 
 The following steps are provided in detail for Mac OSX, you can use similar instructions from
 the links below for the different operating systems.
 
-**Install [Cloud Foundry CLI](https://github.com/cloudfoundry/cli#downloads) client**:
-
-* if [Homebrew](https://brew.sh/) package manager isn't installed on your Mac, install it as described in the [**Install Homebrew** section](https://brew.sh/)
-
-* in a terminal window run the command
+- **Install [Cloud Foundry CLI](https://github.com/cloudfoundry/cli#downloads) client**:
+  - if [Homebrew](https://brew.sh/) package manager isn't installed on your Mac, install it as described in the [**Install Homebrew** section](https://brew.sh/)
+  - in a terminal window run the command
 
     `brew install cloudfoundry/tap/cf-cli`
 
 ![CF install](http://i.imgur.com/zYn2ynh.png)
 
-If your Internet connection requires a proxy server, configure your proxy settings as described in
+- If your Internet connection requires a proxy server, configure your proxy settings as described in
 [Predix Developing through a network proxy](https://www.predix.io/resources/tutorials/tutorial-details.html?tutorial_id=1565).
 
-**Install [CF Predix](https://github.com/PredixDev/cf-predix)**, a plugin for the Cloud Foundry CLI: in a terminal window run the command
+- **Install [CF Predix](https://github.com/PredixDev/cf-predix)**, a plugin for the Cloud Foundry CLI
+- In a terminal window run the command
 
-`cf install-plugin https://github.com/PredixDev/cf-predix/releases/download/1.0.0/predix_osx`
+    `cf install-plugin https://github.com/PredixDev/cf-predix/releases/download/1.0.0/predix_osx`
 
 ![CF Predix install](http://i.imgur.com/3aqwjYL.png)
 
-**Log into the Predix Cloud**: in a terminal window run the command
+- **Log into the Predix Cloud**:
+  - in a terminal window run the command
+    `cf predix`
 
-`cf predix`
-
-Choose one of the regional Point Of Presence (PoP) locations that your account is set up for. This information can be found in
-your registration welcome Predix email. Enter the Email and Password of your Predix account.
+  - Choose one of the regional Point Of Presence (PoP) locations that your account is set up for. This information can be found in
+your registration welcome Predix email.
+  - Enter the Email and Password of your Predix account.
 
 ![CF Predix login](http://i.imgur.com/5HgcTSl.png)
 
-**Download** [Electric Imp's Predix web application](./PredixWebApp/electric_imp_smart_fridge) files.
+- **Download** [Electric Imp's Predix web application](./PredixWebApp/electric_imp_smart_fridge) files
 
-Open [web application manifest.yml](./PredixWebApp/electric_imp_smart_fridge/manifest.yml) file in a text editor.
+- Open [web application manifest.yml](./PredixWebApp/electric_imp_smart_fridge/manifest.yml) file in a text editor
 
 Modify **services** and **env** section with the values obtained during the Predix account configuration steps:
 
