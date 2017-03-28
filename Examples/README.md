@@ -45,83 +45,54 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
 - Open [Predix IoT](https://www.predix.io/) page in your web browser
 - Click **SIGN IN** and login into your Predix account
 - Click on default Predix space **dev**
-
 ![Predix dev](http://i.imgur.com/zrGCrHt.png)
-
 - Click on the **Catalog** button
-
 ![Predix catalog](http://i.imgur.com/8YgvOGa.png)
-
 - Scroll to the **SECURITY** section and click **User Account and Authentication** (UAA) service
-
 ![Predix UAA](http://i.imgur.com/nylhU7v.png)
-
 - Scroll to the bottom and click **Subscribe** on Free plan
-
 ![Predix UAA Subscribe](http://i.imgur.com/DjDAkOk.png)
-
 - Choose your predix account login from **Org** drop-down list
 - Choose **dev** from **Space** drop-down list
 - Enter **Service instance name**, e.g. "uaa"
 - Choose **Free** Service plan
 - Enter any **Admin client secret**
 - Click **Create Service**
-
 ![Predix UAA Create](http://i.imgur.com/dagEvXp.png)
-
 - There are 2 items you need to copy down. These will be used for further Predix account configuring.
   - **UAA Service instance name**
   - **Admin client secret**
-
 - Click **Open Service instance**. You will be redirected to **UAA Service instance** page (usually a new tab).
-
 ![Predix UAA Open](http://i.imgur.com/8RK38LL.png)
-
 - Enter **Admin client secret** to login to your UAA Service instance
-
 - Click **Manage Clients**
-
 ![Predix UAA Client](http://i.imgur.com/al15wAj.png)
-
 - Click **+ Create Client**
-
 ![Predix UAA Create Client](http://i.imgur.com/sV4Xcf5.png)
-
 - Enter **Client ID**<a id=client-id>, e.g. "client"
 - Make sure **client_credentials** check box is checked
 - Enter and confirm **Client Secret**<a id=client-secret>
 - Click **Save**
-
 - There are 2 items you need to copy down. These will be used for Predix Web Application configuring and the demo agent code initialization.
   - **Client ID**
   - **Client Secret**
-
-![Predix UAA Client Details](http://i.imgur.com/YJVvwEb.png)
-
+  ![Predix UAA Client Details](http://i.imgur.com/YJVvwEb.png)
 - Go back to Predix account page in your web browser (the other Predix tab)
 - Click **Back to Space** and **View Catalog**
-
 ![Predix account view catalog](http://i.imgur.com/A0xn5ZD.png)
-
 - Scroll to the **DATA MANAGEMENT** section and click **Asset** service
-
 ![Predix asset](http://i.imgur.com/WSG80E6.png)
 <a id=repeat-asset-steps>
 - Scroll to the bottom and click **Subscribe** on Free plan
-
 - Choose your predix account login from **Org** drop-down list
 - Choose **dev** from **Space** drop-down list
 - Select your UAA service from **User Account & Authentication** drop-down
 - Enter **Service instance name**, e.g. "asset"
 - Choose **Free Service plan**
 - Click **Create Service**
-
 ![Predix asset create](http://i.imgur.com/LOSi0yz.png)
-
-
 - There is 1 item you need to copy down. This will be used for further Predix account configuring.
   - **Asset Service instance name**
-
 - Scroll to the **DATA MANAGEMENT** section and click **Time Series** service
 - [Repeat the previous steps](#repeat-asset-steps) (related to **Asset** service)
 - There is 1 item you need to copy down. This will be used for further Predix account
@@ -136,35 +107,22 @@ the links below for the different operating systems.
 - **Install [Cloud Foundry CLI](https://github.com/cloudfoundry/cli#downloads) client**:
   - if [Homebrew](https://brew.sh/) package manager isn't installed on your Mac, install it as described in the [**Install Homebrew** section](https://brew.sh/)
   - in a terminal window run the command
-
     `brew install cloudfoundry/tap/cf-cli`
-
-![CF install](http://i.imgur.com/zYn2ynh.png)
-
+  ![CF install](http://i.imgur.com/zYn2ynh.png)
 - If your Internet connection requires a proxy server, configure your proxy settings as described in
 [Predix Developing through a network proxy](https://www.predix.io/resources/tutorials/tutorial-details.html?tutorial_id=1565).
-
 - **Install [CF Predix](https://github.com/PredixDev/cf-predix)**, a plugin for the Cloud Foundry CLI
   - In a terminal window run the command
-
     `cf install-plugin https://github.com/PredixDev/cf-predix/releases/download/1.0.0/predix_osx`
-
-![CF Predix install](http://i.imgur.com/3aqwjYL.png)
-
+  ![CF Predix install](http://i.imgur.com/3aqwjYL.png)
 - **Log into the Predix Cloud**:
   - in a terminal window run the command
     `cf predix`
-
-  - Choose one of the regional Point Of Presence (PoP) locations that your account is set up for. This information can be found in
-your registration welcome Predix email
+  - Choose one of the regional Point Of Presence (PoP) locations that your account is set up for. This information can be found in your registration welcome Predix email
   - Enter the Email and Password of your Predix account
-
-![CF Predix login](http://i.imgur.com/5HgcTSl.png)
-
+  ![CF Predix login](http://i.imgur.com/5HgcTSl.png)
 - **Download** [Electric Imp's Predix web application](./PredixWebApp/electric_imp_smart_fridge) files
-
 - Open [web application manifest.yml](./PredixWebApp/electric_imp_smart_fridge/manifest.yml) file in a text editor.
-
   - In services section modify with the values obtained during the Predix account configuration steps
     - **UAA Service instance name**
     - **Asset Service instance name**
@@ -174,55 +132,46 @@ your registration welcome Predix email
     - **Client Secret**
   - In **applications** section
     - Choose a name for your application and modify **name** value
-
-![Predix WebApp manifest](http://i.imgur.com/ckBNkxe.png)
-
+  ![Predix WebApp manifest](http://i.imgur.com/ckBNkxe.png)
 - **Launch Predix Web Application**:
   - In a terminal window change directory to electric_imp_smart_fridge of Electric Imp's Predix SmartRefrigerator sample
   - Run command `cf push -f manifest.yml`
-
-![Predix WebApp installation](http://i.imgur.com/uxnnWwZ.png)
-
+  ![Predix WebApp installation](http://i.imgur.com/uxnnWwZ.png)
   - If the command fails with *Server error, status code: 400, error code: 210003, message: The host is taken: ...*
     - choose another name for your application
     - modify manifest.yml
     - Run `cf push -f manifest.yml` command again
-
-![Predix WebApp install result](http://i.imgur.com/cweRjq5.png)
-
+  ![Predix WebApp install result](http://i.imgur.com/cweRjq5.png)
 - When the application launch has completed successfully, run the command below to get your application's environment variables. The output will be used for further Predix account configuring and the demo agent code initialization.
-
   - Run command `cf env <your_web_application_name>`
   - There are 5 items you need to copy down from the command output
-    1 - Your **Asset URL**<a id=asset-url> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** value
-    2 - Your **Asset Zone ID**<a id=asset-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
+    1 Your **Asset URL**<a id=asset-url> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** value
+    2 Your **Asset Zone ID**<a id=asset-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
     ![Predix Asset info](http://i.imgur.com/3voLJqs.png)
-    3 - Your **Time Series Zone ID**<a id=time-series-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
+    3 Your **Time Series Zone ID**<a id=time-series-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
     ![Predix TimeSeries info](http://i.imgur.com/eM12iWk.png)
-    4 - Your **UAA URL**<a id=uaa-url> can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
+    4 Your **UAA URL**<a id=uaa-url> can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
     ![Predix TimeSeries info](http://i.imgur.com/EZHWB8b.png)
-    5 - Your **Web Application URL**<a id=web-application-url> can be found in **VCAP_APPLICATION->application_uris**
+    5 Your **Web Application URL**<a id=web-application-url> can be found in **VCAP_APPLICATION->application_uris**
     ![Predix WebApp URL](http://i.imgur.com/Fj35LbL.png)
-
-- Go back to your **UAA Service instance** page in your web browser
-
-  - Choose your client and add **Authorized Services**: click to **Choose Service** and choose your **Asset Service instance name**,
-click to **Choose Service** again and choose your **Time Series Service instance name** then click **Submit**.
-
-![Predix UAA client configure](http://i.imgur.com/9QdHglm.png)
-
-Click to **Edit**
-
-![Predix UAA client configure](http://i.imgur.com/KY4UQHT.png)
-
-Find your [Time Series Zone ID](#time-series-zone-id)<br>
-Enter `timeseries.zones.<Time Series Zone ID>.ingest` to Scopes field and press Enter.
-
-![Predix UAA edit](http://i.imgur.com/i9omNUc.png)
-
-Similarly enter `timeseries.zones.<Time Series Zone ID>.query` to Scopes field, enter `timeseries.zones.<Time Series Zone ID>.ingest` and `timeseries.zones.<Time Series Zone ID>.query` to Authorities field and click **Save**.
-
-![Predix UAA edit](http://i.imgur.com/S8gzk7Z.png)
+- Go back to your **UAA Service instance** page in your web browser and choose your client
+  - In the **Authorized Services** section:
+    - Click on the **Choose Service** box and select your **Asset Service instance name**, your asset should show up below the Choose Service box
+    - Click **Choose Service** box again and select your **Time Series Service instance name**, it should show up below the Choose Service box
+    - Click **Submit**
+    ![Predix UAA client configure](http://i.imgur.com/9QdHglm.png)
+  - Find your [Time Series Zone ID](#time-series-zone-id), you will need this for the next step
+  - Next to **Client Info** heading click **Edit**
+  ![Predix UAA client configure](http://i.imgur.com/KY4UQHT.png)
+    - In the **Scopes** field
+      - Fill in `timeseries.zones.<Time Series Zone ID>.ingest` and press "Enter"
+      ![Predix UAA edit](http://i.imgur.com/i9omNUc.png)
+      - Similarly fill in `timeseries.zones.<Time Series Zone ID>.query` and press "Enter"
+    - In the **Authorities** field
+      - Fill in `timeseries.zones.<Time Series Zone ID>.ingest` and press "Enter"
+      - Fill in `timeseries.zones.<Time Series Zone ID>.query` and press "Enter"
+    - Click **Save**
+    ![Predix UAA edit](http://i.imgur.com/S8gzk7Z.png)
 
 ### Step 3 - Connect your Electric Imp to the Internet
 
