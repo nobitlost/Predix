@@ -83,8 +83,7 @@ Click **+ Create Client**
 
 ![Predix UAA Create Client](http://i.imgur.com/sV4Xcf5.png)
 
-Enter **Client ID**, e.g. "client", make sure **client_credentials** check box is checked, enter and confirm **Client Secret** 
-and click **Save**.
+Enter **Client ID**<a id=client-id>, e.g. "client", make sure **client_credentials** check box is checked, enter and confirm **Client Secret**<a id=client-secret> and click **Save**.
 
 There are 2 items you need to copy down: **Client ID** and **Client Secret**. These will be used for Predix Web Application configuring and the demo agent code initialization.
 
@@ -178,20 +177,20 @@ When the installation completed successfully, run command
 
 There are 5 items you need to copy down from the command output. These will be used for further Predix account configuring and the demo agent code initialization.
 
-**Asset URL** and **Asset Zone ID** which can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** and 
+**Asset URL**<a id=asset-url> and **Asset Zone ID**<a id=asset-zone-id> which can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** and 
 **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
 
 ![Predix Asset info](http://i.imgur.com/3voLJqs.png)
 
-**Time Series Zone ID** which can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
+**Time Series Zone ID**<a id=time-series-zone-id> which can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
 
 ![Predix TimeSeries info](http://i.imgur.com/eM12iWk.png)
 
-**UAA URL** which can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
+**UAA URL**<a id=uaa-url> which can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
 
 ![Predix TimeSeries info](http://i.imgur.com/EZHWB8b.png)
 
-**Web Application URL** which can be found in **VCAP_APPLICATION->application_uris**
+**Web Application URL**<a id=web-application-url> which can be found in **VCAP_APPLICATION->application_uris**
 
 ![Predix WebApp URL](http://i.imgur.com/Fj35LbL.png)
 
@@ -206,13 +205,12 @@ Click to **Edit**
 
 ![Predix UAA client configure](http://i.imgur.com/KY4UQHT.png)
 
+Find your [Time Series Zone ID](#time-series-zone-id)<br>
 Enter `timeseries.zones.<Time Series Zone ID>.ingest` to Scopes field and press Enter.
 
 ![Predix UAA edit](http://i.imgur.com/i9omNUc.png)
 
-Similarly enter `timeseries.zones.<Time Series Zone ID>.query` to Scopes field,
-enter `timeseries.zones.<Time Series Zone ID>.ingest` and `timeseries.zones.<Time Series Zone ID>.query` to Authorities field 
-and click **Save**.
+Similarly enter `timeseries.zones.<Time Series Zone ID>.query` to Scopes field, enter `timeseries.zones.<Time Series Zone ID>.ingest` and `timeseries.zones.<Time Series Zone ID>.query` to Authorities field and click **Save**.
 
 ![Predix UAA edit](http://i.imgur.com/S8gzk7Z.png)
 
@@ -260,9 +258,9 @@ into the agent and device coding windows.
 
 ![IDE code windows](http://i.imgur.com/yiCmQZu.png)
 
-Scroll to the bottom of the agent code to find *Predix account constants* variables. Enter your **UAA URL**, **Client ID**, **Client secret**, **Asset URL**, **Asset Zone ID**, and **Time Series Zone ID** from **Step 2** into the corresponding variables.
+Scroll to the bottom of the agent code to find *Predix account constants* variables. Enter your [**UAA URL**](#uaa-url), [**Client ID**](#client-id), [**Client secret**](#client-secret), [**Asset URL**](#asset-url), [**Asset Zone ID**](#asset-zone-id), and [**Time Series Zone ID**](#time-series-zone-id) from **Step 2** into the corresponding variables.
 
-Enter your **Web Application URL** prefixed by "https://" and postfixed by "/ingest_data" to the **TIME_SERIES_INGEST_URL** value. 
+For the **TIME_SERIES_INGEST_URL** copy the [**WEB_APPLICATION_URL**](#web-application-url) value prefixed by "https://" and postfixed by "/ingest_data". 
 
 It should look like 
 
@@ -276,7 +274,7 @@ Remember your **device ID** specified in the bottom left corner. It can be usefu
 
 ### Step 5 - Refrigerator data visualization
 
-Open your **Web Application URL** prefixed by "https://" in your web browser. 
+Open your [**Web Application URL**](#web-application-url) prefixed by "https://" in your web browser. 
 
 Select your device ID from drop down list and click **Sensors Data**.
 
