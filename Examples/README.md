@@ -78,13 +78,13 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
   - **Client Secret**
 ![Predix UAA Client Details](http://i.imgur.com/YJVvwEb.png)
 - Go back to Predix account page in your web browser (the other Predix tab)
+
+<a id=repeat-asset-steps>
+
 - Click **Back to Space** and **View Catalog**
 ![Predix account view catalog](http://i.imgur.com/A0xn5ZD.png)
 - Scroll to the **DATA MANAGEMENT** section and click **Asset** service
 ![Predix asset](http://i.imgur.com/WSG80E6.png)
-
-<a id=repeat-asset-steps>
-
 - Scroll to the bottom and click **Subscribe** on Free plan
 - Choose your predix account login from **Org** drop-down list
 - Choose **dev** from **Space** drop-down list
