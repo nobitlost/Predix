@@ -180,7 +180,7 @@ the links below for the different operating systems.
     - Click **Choose Service** box again and select your **Time Series Service instance name**, it should show up below the Choose Service box
     - Click **Submit**
     ![Predix UAA client configure](http://i.imgur.com/9QdHglm.png)
-  - Find your [Time Series Zone ID](#time-series-zone-id) from the previous step - item #3, you will need this for the next step
+  - Find your [Time Series Zone ID](#time-series-zone-id) from the previous step - item c, you will need this for the next step
   - Next to **Client Info** heading click **Edit**
   ![Predix UAA client configure](http://i.imgur.com/KY4UQHT.png)
     - In the **Scopes** field
