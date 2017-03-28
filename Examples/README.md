@@ -89,14 +89,13 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
 - Choose your predix account login from **Org** drop-down list
 - Choose **dev** from **Space** drop-down list
 - Select your UAA service from **User Account & Authentication** drop-down
-- Enter **Service instance name**, e.g. "asset"
+- Enter **Service instance name**, e.g. "asset", "time-management"
 - Choose **Free Service plan**
 - Click **Create Service**
 ![Predix asset create](http://i.imgur.com/LOSi0yz.png)
 - There is 1 item you need to copy down. This will be used for further Predix account configuring.
   - **Asset Service instance name**
-- Scroll to the **DATA MANAGEMENT** section and click **Time Series** service
-- [Repeat the previous steps](#repeat-asset-steps) (related to **Asset** service)
+- [Repeat the previous steps](#repeat-asset-steps) (related to **Asset** service) only instead scroll to the **DATA MANAGEMENT** section and click **Time Series** service
 - There is 1 item you need to copy down. This will be used for further Predix account
 configuring.
   - **Time Series Service instance name**
