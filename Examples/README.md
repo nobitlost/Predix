@@ -205,12 +205,12 @@ Click to **Edit**
 
 ![Predix UAA client configure](http://i.imgur.com/KY4UQHT.png)
 
-Enter `timeseries.zones.<Time Series Zone ID>.ingest` to Scopes field and press Enter.
+Enter `timeseries.zones.<Time Series Zone ID>.ingest`<a id=#time-series-zone-id> to Scopes field and press Enter.
 
 ![Predix UAA edit](http://i.imgur.com/i9omNUc.png)
 
-Similarly enter `timeseries.zones.<Time Series Zone ID>.query` to Scopes field,
-enter `timeseries.zones.<Time Series Zone ID>.ingest` and `timeseries.zones.<Time Series Zone ID>.query` to Authorities field 
+Similarly enter `timeseries.zones.<Time Series Zone ID>.query`<a id=#time-series-zone-id> to Scopes field,
+enter `timeseries.zones.<Time Series Zone ID>.ingest`<a id=#time-series-zone-id> and `timeseries.zones.<Time Series Zone ID>.query`<a id=#time-series-zone-id> to Authorities field 
 and click **Save**.
 
 ![Predix UAA edit](http://i.imgur.com/S8gzk7Z.png)
