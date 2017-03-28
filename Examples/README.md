@@ -17,14 +17,14 @@ Below are detailed steps on how to connect an Electric Imp with environmental se
 ### Accounts
   - An [Electric Imp developer account](https://ide.electricimp.com/login)
   - A [Predix account](https://www.predix.io/registration/)
-  
+
 ### Hardware
   - An Electric Imp Explorer kit - purchase from [Amazon](https://www.amazon.com/dp/B01N47J61L/ref=cm_sw_r_cp_ep_dp_bzBwybD8TBQ36)
 
 And if you want to install the board into a fridge:
 
   - 3 AA Batteries
-  
+
 ### Software
  - The Electric Imp BlinkUp app ([iOS](https://itunes.apple.com/us/app/electric-imp/id547133856) or [Android](https://play.google.com/store/apps/details?id=com.electricimp.electricimp))
   - [Agent code](./SmartRefrigerator_Predix.agent.nut)
@@ -42,31 +42,34 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
 
 #### Predix account configuration
 
-Open [Predix IoT](https://www.predix.io/) page in your web browser, click **SIGN IN** and login into your Predix account.
-
-Click on default Predix space **dev**.
+- Open [Predix IoT](https://www.predix.io/) page in your web browser
+- Click **SIGN IN** and login into your Predix account.
+- Click on default Predix space **dev**.
 
 ![Predix dev](http://i.imgur.com/zrGCrHt.png)
 
-Click on the **Catalog** button
+- Click on the **Catalog** button
 
 ![Predix catalog](http://i.imgur.com/8YgvOGa.png)
 
-Scroll to the **SECURITY** section and click **User Account and Authentication** (UAA) service.
+- Scroll to the **SECURITY** section and click **User Account and Authentication** (UAA) service.
 
 ![Predix UAA](http://i.imgur.com/nylhU7v.png)
 
-Scroll to the bottom and click **Subscribe** on Free plan.
+- Scroll to the bottom and click **Subscribe** on Free plan.
 
 ![Predix UAA Subscribe](http://i.imgur.com/DjDAkOk.png)
 
-Choose your predix account login from **Org** drop-down list, **dev** from **Space** drop-down list, 
-enter **Service instance name**, e.g. "uaa", choose **Free** Service plan, enter any **Admin client secret** 
-and click **Create Service**.
+- Choose your predix account login from **Org** drop-down list
+- Choose **dev** from **Space** drop-down list
+- Enter **Service instance name**, e.g. "uaa"
+- Choose **Free** Service plan
+- Enter any **Admin client secret**
+- Click **Create Service**.
 
 ![Predix UAA Create](http://i.imgur.com/dagEvXp.png)
 
-There are 2 items you need to copy down: **UAA Service instance name** and **Admin client secret**. These will be used 
+There are 2 items you need to copy down: **UAA Service instance name** and **Admin client secret**. These will be used
 for further Predix account configuring.
 
 Click **Open Service instance**. You will be redirected to **UAA Service instance** page.
@@ -99,85 +102,85 @@ Scroll to the **DATA MANAGEMENT** section and click **Asset** service.
 
 Scroll to the bottom and click **Subscribe** on Free plan.
 
-Choose your predix account login from **Org** drop-down list, **dev** from **Space** drop-down list, 
-select your UAA service from **User Account & Authentication** drop-down, enter **Service instance name**, 
+Choose your predix account login from **Org** drop-down list, **dev** from **Space** drop-down list,
+select your UAA service from **User Account & Authentication** drop-down, enter **Service instance name**,
 e.g. "asset", choose **Free Service plan** and click **Create Service**.
 
 There is 1 item you need to copy down: **Asset Service instance name**. This will be used for further Predix account configuring.
 
 ![Predix asset create](http://i.imgur.com/LOSi0yz.png)
 
-Repeat the previous steps (related to **Asset** service) with **Time Series** service of **DATA MANAGEMENT** section from 
-Predix services catalog. 
+Repeat the previous steps (related to **Asset** service) with **Time Series** service of **DATA MANAGEMENT** section from
+Predix services catalog.
 
-There is 1 item you need to copy down: **Time Series Service instance name**. This will be used for further Predix account 
+There is 1 item you need to copy down: **Time Series Service instance name**. This will be used for further Predix account
 configuring.
 
 #### Install Predix web application
 
 The following steps are provided in detail for Mac OSX, you can use similar instructions from
-the links below for the different operating systems. 
+the links below for the different operating systems.
 
 **Install [Cloud Foundry CLI](https://github.com/cloudfoundry/cli#downloads) client**:
 
 * if [Homebrew](https://brew.sh/) package manager isn't installed on your Mac, install it as described in the [**Install Homebrew** section](https://brew.sh/)
 
-* in a terminal window run the command 
+* in a terminal window run the command
 
     `brew install cloudfoundry/tap/cf-cli`
 
 ![CF install](http://i.imgur.com/zYn2ynh.png)
 
-If your Internet connection requires a proxy server, configure your proxy settings as described in  
+If your Internet connection requires a proxy server, configure your proxy settings as described in
 [Predix Developing through a network proxy](https://www.predix.io/resources/tutorials/tutorial-details.html?tutorial_id=1565).
 
-**Install [CF Predix](https://github.com/PredixDev/cf-predix)**, a plugin for the Cloud Foundry CLI: in a terminal window run the command 
+**Install [CF Predix](https://github.com/PredixDev/cf-predix)**, a plugin for the Cloud Foundry CLI: in a terminal window run the command
 
 `cf install-plugin https://github.com/PredixDev/cf-predix/releases/download/1.0.0/predix_osx`
 
 ![CF Predix install](http://i.imgur.com/3aqwjYL.png)
 
-**Log into the Predix Cloud**: in a terminal window run the command 
+**Log into the Predix Cloud**: in a terminal window run the command
 
 `cf predix`
 
-Choose one of the regional Point Of Presence (PoP) locations that your account is set up for. This information can be found in 
+Choose one of the regional Point Of Presence (PoP) locations that your account is set up for. This information can be found in
 your registration welcome Predix email. Enter the Email and Password of your Predix account.
 
 ![CF Predix login](http://i.imgur.com/5HgcTSl.png)
 
-**Download** [Electric Imp's Predix web application](./PredixWebApp/electric_imp_smart_fridge) files. 
+**Download** [Electric Imp's Predix web application](./PredixWebApp/electric_imp_smart_fridge) files.
 
 Open [web application manifest.yml](./PredixWebApp/electric_imp_smart_fridge/manifest.yml) file in a text editor.
 
-Modify **services** and **env** section with the values obtained during the Predix account configuration steps: 
+Modify **services** and **env** section with the values obtained during the Predix account configuration steps:
 
 * specify **UAA Service instance name**, **Asset Service instance name**, **Time Series Service instance name** in services section
-* **Client ID** and **Client Secret** in env section. 
+* **Client ID** and **Client Secret** in env section.
 
 Choose a name for your application, and modify **name** value in **applications** section.
 
 ![Predix WebApp manifest](http://i.imgur.com/ckBNkxe.png)
 
-**Install Predix Web Application**: in a terminal window change directory to electric_imp_smart_fridge of Electric Imp's 
-Predix SmartRefrigerator sample and run command 
+**Install Predix Web Application**: in a terminal window change directory to electric_imp_smart_fridge of Electric Imp's
+Predix SmartRefrigerator sample and run command
 
 `cf push -f manifest.yml`
 
 ![Predix WebApp installation](http://i.imgur.com/uxnnWwZ.png)
 
-If the command fails with *Server error, status code: 400, error code: 210003, message: The host is taken: ...*, choose another 
+If the command fails with *Server error, status code: 400, error code: 210003, message: The host is taken: ...*, choose another
 name for your application, modify manifest.yml and try again.
 
 ![Predix WebApp install result](http://i.imgur.com/cweRjq5.png)
 
-When the installation completed successfully, run command 
+When the installation completed successfully, run command
 
 `cf env <your_web_application_name>`
 
 There are 5 items you need to copy down from the command output. These will be used for further Predix account configuring and the demo agent code initialization.
 
-**Asset URL**<a id=asset-url> and **Asset Zone ID**<a id=asset-zone-id> which can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** and 
+**Asset URL**<a id=asset-url> and **Asset Zone ID**<a id=asset-zone-id> which can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** and
 **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
 
 ![Predix Asset info](http://i.imgur.com/3voLJqs.png)
@@ -196,7 +199,7 @@ There are 5 items you need to copy down from the command output. These will be u
 
 Go back to your **UAA Service instance** page in your web browser.
 
-Choose your client and add **Authorized Services**: click to **Choose Service** and choose your **Asset Service instance name**, 
+Choose your client and add **Authorized Services**: click to **Choose Service** and choose your **Asset Service instance name**,
 click to **Choose Service** again and choose your **Time Series Service instance name** then click **Submit**.
 
 ![Predix UAA client configure](http://i.imgur.com/9QdHglm.png)
@@ -260,9 +263,9 @@ into the agent and device coding windows.
 
 Scroll to the bottom of the agent code to find *Predix account constants* variables. Enter your [**UAA URL**](#uaa-url), [**Client ID**](#client-id), [**Client secret**](#client-secret), [**Asset URL**](#asset-url), [**Asset Zone ID**](#asset-zone-id), and [**Time Series Zone ID**](#time-series-zone-id) from **Step 2** into the corresponding variables.
 
-For the **TIME_SERIES_INGEST_URL** copy the [**WEB_APPLICATION_URL**](#web-application-url) value prefixed by "https://" and postfixed by "/ingest_data". 
+For the **TIME_SERIES_INGEST_URL** copy the [**WEB_APPLICATION_URL**](#web-application-url) value prefixed by "https://" and postfixed by "/ingest_data".
 
-It should look like 
+It should look like
 
 `const TIME_SERIES_INGEST_URL = "https://electricimp-smart-fridge.run.aws-usw02-pr.ice.predix.io/ingest_data";`
 
@@ -274,7 +277,7 @@ Remember your **device ID** specified in the bottom left corner. It can be usefu
 
 ### Step 5 - Refrigerator data visualization
 
-Open your [**Web Application URL**](#web-application-url) prefixed by "https://" in your web browser. 
+Open your [**Web Application URL**](#web-application-url) prefixed by "https://" in your web browser.
 
 Select your device ID from drop down list and click **Sensors Data**.
 
