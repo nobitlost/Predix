@@ -3,7 +3,7 @@
 Create a connected refrigerator using an Electric Imp and the Predix IoT platform.
 
 ## Overview
-Skill Level: Beginner
+Skill Level: Intermediate
 
 Below are detailed steps on how to connect an Electric Imp with environmental sensors to the Predix Platform in order to visualize and monitor your refrigerator in real time.
 
@@ -19,7 +19,7 @@ Below are detailed steps on how to connect an Electric Imp with environmental se
   - A [Predix account](https://www.predix.io/registration/)
 
 ### Hardware
-  - An Electric Imp Explorer kit - purchase from [Amazon](https://www.amazon.com/dp/B01N47J61L/ref=cm_sw_r_cp_ep_dp_bzBwybD8TBQ36)
+  - An Electric Imp Explorer kit - [purchase here](https://store.electricimp.com/collections/featured-products/products/impexplorer-developer-kit?variant=31118866130)
 
 And if you want to install the board into a fridge:
 
@@ -160,18 +160,18 @@ the links below for the different operating systems.
 
   - There are 5 items you need to copy down from the command output
 
-    1 Your **Asset URL**<a id=asset-url> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** value
+    1. Your **Asset URL**<a id=asset-url>, can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** value
 
-    2 Your **Asset Zone ID**<a id=asset-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
+    2. Your **Asset Zone ID**<a id=asset-zone-id>, can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
     ![Predix Asset info](http://i.imgur.com/3voLJqs.png)
 
-    3 Your **Time Series Zone ID**<a id=time-series-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
+    3. Your **Time Series Zone ID**<a id=time-series-zone-id>, can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
     ![Predix TimeSeries info](http://i.imgur.com/eM12iWk.png)
 
-    4 Your **UAA URL**<a id=uaa-url> can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
+    4. Your **UAA URL**<a id=uaa-url>, can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
     ![Predix TimeSeries info](http://i.imgur.com/EZHWB8b.png)
 
-    5 Your **Web Application URL**<a id=web-application-url> can be found in **VCAP_APPLICATION->application_uris**
+    5. Your **Web Application URL**<a id=web-application-url>, can be found in **VCAP_APPLICATION->application_uris**
     ![Predix WebApp URL](http://i.imgur.com/Fj35LbL.png)
 
 - Go back to your **UAA Service instance** page in your web browser and choose your client
@@ -180,7 +180,7 @@ the links below for the different operating systems.
     - Click **Choose Service** box again and select your **Time Series Service instance name**, it should show up below the Choose Service box
     - Click **Submit**
     ![Predix UAA client configure](http://i.imgur.com/9QdHglm.png)
-  - Find your [Time Series Zone ID](#time-series-zone-id), you will need this for the next step
+  - Find your [Time Series Zone ID](#time-series-zone-id) from the previous step - item #3, you will need this for the next step
   - Next to **Client Info** heading click **Edit**
   ![Predix UAA client configure](http://i.imgur.com/KY4UQHT.png)
     - In the **Scopes** field
