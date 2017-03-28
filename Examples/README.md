@@ -178,11 +178,8 @@ your registration welcome Predix email
 ![Predix WebApp manifest](http://i.imgur.com/ckBNkxe.png)
 
 - **Launch Predix Web Application**:
-  - In a terminal window change directory to electric_imp_smart_fridge of Electric Imp's
-Predix SmartRefrigerator sample
-  - Run command
-
-    `cf push -f manifest.yml`
+  - In a terminal window change directory to electric_imp_smart_fridge of Electric Imp's Predix SmartRefrigerator sample
+  - Run command `cf push -f manifest.yml`
 
 ![Predix WebApp installation](http://i.imgur.com/uxnnWwZ.png)
 
@@ -195,27 +192,17 @@ Predix SmartRefrigerator sample
 
 - When the application launch has completed successfully, run the command below to get your application's environment variables. The output will be used for further Predix account configuring and the demo agent code initialization.
 
-  - Run command
-
-    `cf env <your_web_application_name>`
-
+  - Run command `cf env <your_web_application_name>`
   - There are 5 items you need to copy down from the command output
-    - 1.) Your **Asset URL**<a id=asset-url> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** value
-    - 2.) Your **Asset Zone ID**<a id=asset-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
-
-![Predix Asset info](http://i.imgur.com/3voLJqs.png)
-
-    - 3.) Your **Time Series Zone ID**<a id=time-series-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
-
-![Predix TimeSeries info](http://i.imgur.com/eM12iWk.png)
-
-    - 4.) Your **UAA URL**<a id=uaa-url> can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
-
-![Predix TimeSeries info](http://i.imgur.com/EZHWB8b.png)
-
-    - 5.) Your **Web Application URL**<a id=web-application-url> can be found in **VCAP_APPLICATION->application_uris**
-
-![Predix WebApp URL](http://i.imgur.com/Fj35LbL.png)
+    1 - Your **Asset URL**<a id=asset-url> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->uri** value
+    2 - Your **Asset Zone ID**<a id=asset-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-asset->credentials->zone->http-header-value**
+    ![Predix Asset info](http://i.imgur.com/3voLJqs.png)
+    3 - Your **Time Series Zone ID**<a id=time-series-zone-id> can be found in **System-Provided->VCAP_SERVICES->predix-timeseries->credentials->ingest->zone-http-header-value**
+    ![Predix TimeSeries info](http://i.imgur.com/eM12iWk.png)
+    4 - Your **UAA URL**<a id=uaa-url> can be found in **System-Provided->VCAP_SERVICES->predix-uaa->credentials->uri**
+    ![Predix TimeSeries info](http://i.imgur.com/EZHWB8b.png)
+    5 - Your **Web Application URL**<a id=web-application-url> can be found in **VCAP_APPLICATION->application_uris**
+    ![Predix WebApp URL](http://i.imgur.com/Fj35LbL.png)
 
 - Go back to your **UAA Service instance** page in your web browser
 
