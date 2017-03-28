@@ -43,8 +43,8 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
 #### Predix account configuration
 
 - Open [Predix IoT](https://www.predix.io/) page in your web browser
-- Click **SIGN IN** and login into your Predix account.
-- Click on default Predix space **dev**.
+- Click **SIGN IN** and login into your Predix account
+- Click on default Predix space **dev**
 
 ![Predix dev](http://i.imgur.com/zrGCrHt.png)
 
@@ -52,11 +52,11 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
 
 ![Predix catalog](http://i.imgur.com/8YgvOGa.png)
 
-- Scroll to the **SECURITY** section and click **User Account and Authentication** (UAA) service.
+- Scroll to the **SECURITY** section and click **User Account and Authentication** (UAA) service
 
 ![Predix UAA](http://i.imgur.com/nylhU7v.png)
 
-- Scroll to the bottom and click **Subscribe** on Free plan.
+- Scroll to the bottom and click **Subscribe** on Free plan
 
 ![Predix UAA Subscribe](http://i.imgur.com/DjDAkOk.png)
 
@@ -65,48 +65,59 @@ Use an Electric Imp to collect temperature, humidity and light sensor data.  Ana
 - Enter **Service instance name**, e.g. "uaa"
 - Choose **Free** Service plan
 - Enter any **Admin client secret**
-- Click **Create Service**.
+- Click **Create Service**
 
 ![Predix UAA Create](http://i.imgur.com/dagEvXp.png)
 
-There are 2 items you need to copy down: **UAA Service instance name** and **Admin client secret**. These will be used
-for further Predix account configuring.
+- There are 2 items you need to copy down. These will be used for further Predix account configuring.
+  - **UAA Service instance name**
+  - **Admin client secret**
 
-Click **Open Service instance**. You will be redirected to **UAA Service instance** page.
+- Click **Open Service instance**. You will be redirected to **UAA Service instance** page.
 
 ![Predix UAA Open](http://i.imgur.com/8RK38LL.png)
 
-Enter **Admin client secret** to login to your UAA Service instance.
+- Enter **Admin client secret** to login to your UAA Service instance
 
-Click **Manage Clients**
+- Click **Manage Clients**
 
 ![Predix UAA Client](http://i.imgur.com/al15wAj.png)
 
-Click **+ Create Client**
+- Click **+ Create Client**
 
 ![Predix UAA Create Client](http://i.imgur.com/sV4Xcf5.png)
 
-Enter **Client ID**<a id=client-id>, e.g. "client", make sure **client_credentials** check box is checked, enter and confirm **Client Secret**<a id=client-secret> and click **Save**.
+- Enter **Client ID**<a id=client-id>, e.g. "client"
+- Make sure **client_credentials** check box is checked
+- Enter and confirm **Client Secret**<a id=client-secret>
+- Click **Save**
 
-There are 2 items you need to copy down: **Client ID** and **Client Secret**. These will be used for Predix Web Application configuring and the demo agent code initialization.
+- There are 2 items you need to copy down. These will be used for Predix Web Application configuring and the demo agent code initialization.
+  - **Client ID**
+  - **Client Secret**
 
 ![Predix UAA Client Details](http://i.imgur.com/YJVvwEb.png)
 
-Go back to Predix account page in your web browser, click **Back to Space** and **View Catalog**.
+- Go back to Predix account page in your web browser
+- Click **Back to Space** and **View Catalog**
 
 ![Predix account view catalog](http://i.imgur.com/A0xn5ZD.png)
 
-Scroll to the **DATA MANAGEMENT** section and click **Asset** service.
+- Scroll to the **DATA MANAGEMENT** section and click **Asset** service
 
 ![Predix asset](http://i.imgur.com/WSG80E6.png)
 
-Scroll to the bottom and click **Subscribe** on Free plan.
+- Scroll to the bottom and click **Subscribe** on Free plan
 
-Choose your predix account login from **Org** drop-down list, **dev** from **Space** drop-down list,
-select your UAA service from **User Account & Authentication** drop-down, enter **Service instance name**,
-e.g. "asset", choose **Free Service plan** and click **Create Service**.
+- Choose your predix account login from **Org** drop-down list
+- Choose **dev** from **Space** drop-down list
+- Select your UAA service from **User Account & Authentication** drop-down
+- Enter **Service instance name** e.g. "asset"
+- Choose **Free Service plan**
+- Click **Create Service**
 
-There is 1 item you need to copy down: **Asset Service instance name**. This will be used for further Predix account configuring.
+- There is 1 item you need to copy down. This will be used for further Predix account configuring.
+  - **Asset Service instance name**
 
 ![Predix asset create](http://i.imgur.com/LOSi0yz.png)
 
