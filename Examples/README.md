@@ -3,7 +3,7 @@
 Create a connected refrigerator using an Electric Imp and the Predix IoT platform.
 
 ## Overview
-Skill Level: Intermediate
+Skill Level: Advanced
 
 Below are detailed steps on how to connect an Electric Imp with environmental sensors to the Predix Platform in order to visualize and monitor your refrigerator in real time.
 
@@ -173,10 +173,10 @@ the links below for the different operating systems.
     5. Your **Web Application URL**<a id=web-application-url>, can be found in **VCAP_APPLICATION->application_uris**
     ![Predix WebApp URL](http://i.imgur.com/Fj35LbL.png)
 
-- Go back to your **UAA Service instance** page in your web browser and choose your client
+- Go back to your **UAA Service instance** page in your web browser and choose **your client** (you may need to log back in)
   - In the **Authorized Services** section:
-    - Click on the **Choose Service** box and select your **Asset Service instance name**, your asset should show up below the Choose Service box
-    - Click **Choose Service** box again and select your **Time Series Service instance name**, it should show up below the Choose Service box
+    - Click on the **Choose Service** box and select your **Asset Service instance name** from the dropdown, your asset instance should show up below the Choose Service box after you select it
+    - Click **Choose Service** box again and select your **Time Series Service instance name** from the dropdown, your time series instance should show up below the Choose Service box after you select it
     - Click **Submit**
     ![Predix UAA client configure](http://i.imgur.com/9QdHglm.png)
   - Find your [Time Series Zone ID](#time-series-zone-id) from the previous step - item c, you will need this for the next step
