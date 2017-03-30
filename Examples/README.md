@@ -260,7 +260,20 @@ Take note of your **device ID** specified in the bottom left corner. It can be u
 - On the device page you can see the current temerature and humidity values, door status and alerts over the past hour.
 ![Predix Web App](http://i.imgur.com/SU2du1n.png)
 
-### Step 6 - Troubleshouting guide
+### Step 6 - Install the Imp in your Refrigerator
+
+Open your refrigerator and place the Imp on a shelf in the door.
+
+![Imp In Fridge](http://i.imgur.com/z5llZBg.png)
+
+### Step 7 - Optional Improvements
+
+Your refrigerator is now connected to the internet. As you begin to gather data for your refrigerator you should adjust the static variables in your device SmartFridgeApp class to further customize your integration.
+
+* Adjust the temperature, humidity, and lighting thresholds to optimize for your frigde
+* Adjust the reading and reporting times to optimize power usage
+
+### Troubleshouting guide
 
 If you have any problems with Predix Smart Refrigerator agent code execution, try to localize it and check your 
 Predix account settings and constants depending on the error:
@@ -298,16 +311,3 @@ If you have any problems with the web application
 After making any Predix account modification, relaunch the web application using a terminal command 
 
 `cf push -f manifest.yml`
-
-### Step 7 - Install the Imp in your Refrigerator
-
-Open your refrigerator and place the Imp on a shelf in the door.
-
-![Imp In Fridge](http://i.imgur.com/z5llZBg.png)
-
-### Step 8 - Optional Improvements
-
-Your refrigerator is now connected to the internet. As you begin to gather data for your refrigerator you should adjust the static variables in your device SmartFridgeApp class to further customize your integration.
-
-* Adjust the temperature, humidity, and lighting thresholds to optimize for your frigde
-* Adjust the reading and reporting times to optimize power usage
