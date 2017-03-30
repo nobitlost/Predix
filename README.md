@@ -179,4 +179,4 @@ There are the following error types provided in *status*:
 
 ## License
 
-The Promise class is licensed under the [MIT License](./LICENSE).
+The Predix library is licensed under the [MIT License](./LICENSE).
