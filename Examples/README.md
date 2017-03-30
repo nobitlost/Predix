@@ -273,7 +273,7 @@ Your refrigerator is now connected to the internet. As you begin to gather data 
 * Adjust the temperature, humidity, and lighting thresholds to optimize for your frigde
 * Adjust the reading and reporting times to optimize power usage
 
-### Troubleshouting guide
+### Troubleshooting guide
 
 If you have any problems with Predix Smart Refrigerator agent code execution, try to localize it and check your 
 Predix account settings and constants depending on the error:
