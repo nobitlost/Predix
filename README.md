@@ -8,7 +8,7 @@ The library allows to integrate your IMP agent code with [GE Predix IoT platform
 
 For example:
 ```squirrel
-#require "promise.class.nut:3.0.0"
+#require "promise.class.nut:3.0.1"
 #require "Predix.class.nut:1.0.0"
 ```
 
@@ -44,7 +44,7 @@ To instantiate this library you need to have:
 And pass these initialization data into the constructor.
 
 ```squirrel
-#require "promise.class.nut:3.0.0"
+#require "promise.class.nut:3.0.1"
 #require "Predix.class.nut:1.0.0"
 
 predix = Predix(<uaaUrl>, <clientId>, <clientSecret>, <assetUrl>, <assetZoneId>, 
