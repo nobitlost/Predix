@@ -311,3 +311,7 @@ If you have any problems with the web application
 After making any Predix account modification, relaunch the web application using a terminal command 
 
 `cf push -f manifest.yml`
+
+## License
+
+The Predix library is licensed under the [MIT License](../LICENSE).
