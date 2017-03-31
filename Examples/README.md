@@ -177,7 +177,7 @@ the links below for the different operating systems.
   - In the **Authorized Services** section:
     - Click on the **Choose Service** box and select your **Asset Service instance name** from the dropdown, your asset instance should show up below the Choose Service box after you select it
     - Click **Choose Service** box again and select your **Time Series Service instance name** from the dropdown, your time series instance should show up below the Choose Service box after you select it
-    - Click **Submit**
+    - Click **Submit** <a id=uaa-authorized-services>
     ![Predix UAA client configure](http://i.imgur.com/9QdHglm.png)
   - Find your [Time Series Zone ID](#time-series-zone-id) from the previous step - item c, you will need this for the next step
   - Next to **Client Info** heading click **Edit**
@@ -189,8 +189,11 @@ the links below for the different operating systems.
     - In the **Authorities** field
       - Fill in `timeseries.zones.<Time Series Zone ID>.ingest` and press "Enter"
       - Fill in `timeseries.zones.<Time Series Zone ID>.query` and press "Enter"
-    - Click **Save**
+    - Click **Save** <a id=uaa-scopes-authorities>
     ![Predix UAA edit](http://i.imgur.com/S8gzk7Z.png)
+
+- **Relaunch Predix Web Application**:
+  - Run `cf push -f manifest.yml` command in a terminal window
 
 ### Step 3 - Connect your Electric Imp to the Internet
 
@@ -241,7 +244,7 @@ For more information on BlinkUp visit the Electric Imp [Dev Center](https://elec
     - [**Time Series Zone ID**](#time-series-zone-id)
   - For the **TIME_SERIES_INGEST_URL** copy the [**WEB_APPLICATION_URL**](#web-application-url) value prefixed by "https://" and postfixed by "/ingest_data".
 
-  It should look like
+  It should look like <a id=time-series-ingest-url>
 
   `const TIME_SERIES_INGEST_URL = "https://electricimp-smart-fridge.run.aws-usw02-pr.ice.predix.io/ingest_data";`
 
@@ -269,3 +272,42 @@ Your refrigerator is now connected to the internet. As you begin to gather data 
 
 * Adjust the temperature, humidity, and lighting thresholds to optimize for your frigde
 * Adjust the reading and reporting times to optimize power usage
+
+### Troubleshooting guide
+
+If you have any problems with Predix Smart Refrigerator agent code execution, try to localize it and check your 
+Predix account settings and constants depending on the error:
+
+- if your Smart Refrigerator demo doesn't log '[Agent] Dev created' message and 
+  - fails with error '[Agent] ERROR: Predix request failed with status code: 401'
+    - check [**CLIENT_ID**](#client-id), [**CLIENT_SECRET**](#client-secret) and [**ASSET_ZONE_ID**](#asset-zone-id) 
+      constants values from Predix accout constants section of your agent code
+    - go back to your **UAA Service instance** page in your web browser (you may need to log back in)
+      - choose **your client**
+      - ensure your client contains **Asset service instance name** in [**Authorized Services**](#uaa-authorized-services)
+
+  - fails with error '[Agent] ERROR: Predix request failed with status code: 404'
+    - check [**ASSET_URL**](#asset-url) and [**UAA_URL**](#uaa-url) constants values from Predix accout constants section of your agent code
+
+- if your Smart Refrigerator demo logs '[Agent] Dev created' message but then periodically fails during ingestData execution
+  - fails with error '[Agent] ERROR: Predix request failed with status code: 404' 
+    - check [**TIME_SERIES_INGEST_URL**](#time-series-ingest-url) constant value from Predix accout constants section of your agent code
+  - fails with error '[Agent] ERROR: Predix request failed with status code: 400'
+    - check [**TIME_SERIES_ZONE_ID**](#time-series-zone-id) constant value from Predix accout constants section of your agent code
+    - go back to your **UAA Service instance** page in your web browser (you may need to log back in)
+      - choose **your client**
+      - ensure your client contains **Time Series service instance name** in [**Authorized Services**](#uaa-authorized-services)
+      - ensure your client [**Scopes** and **Authorities**](#uaa-scopes-authorities) contain valid values `timeseries.zones.<Time Series Zone ID>.ingest`
+
+If you have any problems with the web application
+  - try to relaunch the web application using a terminal command `cf push -f manifest.yml`
+  - if the web application fails with 'HTTP request failed with status ...' error
+    - check manifest.yml [**clientId**](#client-id) and [**clientSecret**](#client-secret) parameters
+    - go back to your **UAA Service instance** page in your web browser (you may need to log back in)
+      - choose **your client**
+      - ensure your client contains **Asset** and **Time Series** service instance names in [**Authorized Services**](#uaa-authorized-services)
+      - ensure your client [**Scopes** and **Authorities**](#uaa-scopes-authorities) contain valid values `timeseries.zones.<Time Series Zone ID>.query`
+
+After making any Predix account modification, relaunch the web application using a terminal command 
+
+`cf push -f manifest.yml`
