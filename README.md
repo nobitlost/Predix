@@ -175,7 +175,7 @@ There are the following error types provided in *status*:
 
 ## Examples
 
-- [Smart Refrigerator demo: agent code](./Examples/SmartRefrigerator_Predix.agent.nut)
+- [Smart Refrigerator Demo](./Examples)
 
 ## License
 
