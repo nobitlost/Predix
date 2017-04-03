@@ -20,11 +20,6 @@ For more information about Predix platform setup and usage, please see [the Pred
 
 **To add this library to your project, add** `#require "Predix.class.nut:1.0.0"` **and** `#require "Promise.class.nut:3.0.1"` **to the top of your agent code.**
 
-```squirrel
-#require "promise.class.nut:3.0.1"
-#require "Predix.class.nut:1.0.0"
-```
-
 ## Library Usage
 
 The library API is detailed in the source file, [here](./Predix.class.nut).
