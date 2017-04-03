@@ -27,7 +27,7 @@ For more information about Predix platform setup and usage, please see [the Pred
 
 ## Library Usage
 
-The library API is specified [here](./Predix.class.nut)
+The library API is detailed in the source file, [here](./Predix.class.nut).
 
 ### Constructor: Predix(*uaaUrl, clientId, clientSecret, assetUrl, assetZoneId, timeSeriesIngestUrl, timeSeriesZoneId*)
 
