@@ -9,7 +9,7 @@ You will use an Electric Imp impExplorer&trade; Kit to collect temperature, humi
 
 Skill Level: Advanced
 
-Below are detailed steps that show you how to connect an imp-enabled device containg environmental sensors to the Predix Platform in order to visualize and monitor your refrigerator in real time.
+Below are detailed steps that show you how to connect an imp-enabled device containing environmental sensors to the Predix Platform in order to visualize and monitor your refrigerator in real time.
 
 ## Ingredients
 
@@ -57,7 +57,7 @@ Below are detailed steps that show you how to connect an imp-enabled device cont
 - Enter any ‘Admin Client Secret’.
 - Click on ‘Create Service’:
 ![Predix UAA Create](http://i.imgur.com/dagEvXp.png)
-- Make sure you make a separate note of your **Admin Client Secret** and your **UUA Service Instance Name**, as these will be used for further Predix account confguration.
+- Make sure you make a separate note of your **Admin Client Secret** and your **UUA Service Instance Name**, as these will be used for further Predix account configuration.
 - Click on ‘Open Service instance’. You will be redirected to the UAA Service Instance page (usually a new tab):
 ![Predix UAA Open](http://i.imgur.com/8RK38LL.png)
 - Enter your Admin Client Secret to log in to your UAA Service instance.
@@ -180,7 +180,7 @@ The following steps are provided in detail for macOS, but you can use similar in
 - **Relaunch Predix Web Application**:
   - Run the command `cf push -f manifest.yml` in a terminal window.
 
-### Step 2 - Connect your Electric Imp impExlorer Kit to the Internet
+### Step 2 - Connect your Electric Imp impExplorer Kit to the Internet
 
 #### Set up the hardware
 
@@ -203,7 +203,7 @@ When BlinkUp is successful, the imp will blink green and the app will show you t
 
 <img src="http://i.imgur.com/rljkSnI.png" width="250">
 
-For more information on BlinkUp, pleasevisit the Electric Imp [Dev Center](https://electricimp.com/docs/gettingstarted/blinkup/).
+For more information on BlinkUp, pleasevisit the Electric Imp [Dev Center](https://electricimp.com/docs/gettingstarted/explorer/blinkup/).
 
 ### Step 3 - Connect your Electric Imp impExplorer Kit to Predix IoT
 
@@ -242,10 +242,10 @@ Take note of your device ID, as specified in the bottom left corner. It can be u
 
 - Open your [**Web Application URL**](#web-application-url) prefixed by "https://" in your web browser.
 - Select your device ID from drop-down list and click ‘Sensors Data’.
-- On the device page, you can see the current temerature and humidity values, door status and alerts over the past hour:
+- On the device page, you can see the current temperature and humidity values, door status and alerts over the past hour:
 ![Predix Web App](http://i.imgur.com/SU2du1n.png)
 
-### Step 5 - Install the Electric Imp impExlorer Kit in Your Refrigerator
+### Step 5 - Install the Electric Imp impExplorer Kit in Your Refrigerator
 
 Open your refrigerator and place the impExplorer on a shelf in the door:
 
@@ -255,7 +255,7 @@ Open your refrigerator and place the impExplorer on a shelf in the door:
 
 Your refrigerator is now connected to the internet. As you begin to gather data for your refrigerator you should adjust the static variables in your device SmartFridgeApp class to further customize your integration.
 
-* Adjust the temperature, humidity and lighting thresholds to optimize for your frigde.
+* Adjust the temperature, humidity and lighting thresholds to optimize for your fridge.
 * Adjust the reading and reporting times to optimize power usage.
 
 ### Troubleshooting
@@ -266,19 +266,19 @@ Predix account settings and constants, depending on the error:
 - If your Smart Refrigerator demo doesn’t log an "[Agent] Dev created" message, and 
   - fails with error "[Agent] ERROR: Predix request failed with status code: 401":
     - Check the [**CLIENT_ID**](#client-id), [**CLIENT_SECRET**](#client-secret) and [**ASSET_ZONE_ID**](#asset-zone-id) 
-      constants values from Predix accout constants section of your agent code.
+      constants values from the Predix account constants section of your agent code.
     - Go back to your ‘UAA Service instance’ page in your web browser (you may need to log back in)
       - Choose your client.
       - Ensure your client contains your Asset service instance name in [‘Authorized Services’](#uaa-authorized-services).
 
   - fails with error "[Agent] ERROR: Predix request failed with status code: 404":
-    - Check the [**ASSET_URL**](#asset-url) and [**UAA_URL**](#uaa-url) constants values from Predix accout constants section of your agent code.
+    - Check the [**ASSET_URL**](#asset-url) and [**UAA_URL**](#uaa-url) constants values from the Predix account constants section of your agent code.
 
 - If your Smart Refrigerator demo logs the "[Agent] Dev created" message but then periodically fails during ingest data execution, and 
   - fails with error "[Agent] ERROR: Predix request failed with status code: 404":
-    - Check the [**TIME_SERIES_INGEST_URL**](#time-series-ingest-url) constant value from Predix accout constants section of your agent code.
+    - Check the [**TIME_SERIES_INGEST_URL**](#time-series-ingest-url) constant value from the Predix account constants section of your agent code.
   - fails with error "[Agent] ERROR: Predix request failed with status code: 400":
-    - Check the [**TIME_SERIES_ZONE_ID**](#time-series-zone-id) constant value from Predix accout constants section of your agent code
+    - Check the [**TIME_SERIES_ZONE_ID**](#time-series-zone-id) constant value from the Predix account constants section of your agent code
     - Go back to your **UAA Service instance** page in your web browser (you may need to log back in)
       - Choose your client.
       - Ensure your client contains your Time Series service instance name in [‘Authorized Services’](#uaa-authorized-services).
