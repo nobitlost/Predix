@@ -47,7 +47,7 @@ predix <- Predix(<"YOUR_UUA_URL">, <"YOUR_CLIENT_ID">, <"YOUR_CLIENT_SECRET">, <
 
 The constructor does not return any error. If any or all of the initialization data is not correct, you receive an appropriate error when the library method cannot be executed
 
-**Note** The current version of the library accepts only *http* or *https* Time Series service ingestion URL. Please check if the latest version of the Predix platform supports data ingestion over *http* or *https* protocols. If not (eg. Time Series service uses only WebSocket protocol for data ingestion), you will need an external http-to-websocket proxy that receives *http/https* requests from the library and resends them to the Predix Time Series service through WebSocket.
+**Note** The current version of the library accepts only *http* or *https* Time Series service ingestion URL. Please check if the latest version of the Predix platform supports data ingestion over *http* or *https* protocols. If not (eg. Time Series service uses only WebSocket protocol for data ingestion), you will need an external http-to-websocket proxy that receives *http/https* requests from the library and resends them to the Predix Time Series service through WebSocket. An example of such a http-to-websocket proxy can be found in the example [code](Examples).
 
 ## Library Methods
 
