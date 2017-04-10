@@ -4,6 +4,8 @@ Create a connected refrigerator using an Electric Imp and the Predix IoT platfor
 
 You will use an Electric Imp impExplorer&trade; Kit to collect temperature, humidity and light sensor data. This data will be analyzed to determine if your refrigerator compressor is working properly and to track if your refrigerator door has been left open.  Upload data to the Predix IoT platform to monitor and visualize your refrigerator in real time.
 
+**Important Note**:
+The provided example is for illustration purposes. It can be used as a starting point for use-case specific integrations.
 
 ## Overview
 
