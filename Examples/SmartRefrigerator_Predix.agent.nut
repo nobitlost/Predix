@@ -26,7 +26,7 @@
 #require "bullwinkle.class.nut:2.3.2"
 #require "promise.class.nut:3.0.0"
 // Web Integration Library
-#require "Predix.class.nut:1.0.0"
+#require "Predix.agent.nut:1.0.0"
 
 // Class that receives and handles data sent from device SmartFridgeApp
 /***************************************************************************************
@@ -47,7 +47,7 @@ class SmartFrigDataManager {
     static EVENT_TYPE_HUMID_ALERT = "humidity alert";
     static EVENT_TYPE_DOOR_ALERT = "door alert";
     static EVENT_TYPE_DOOR_STATUS = "door status";
-    
+
     static TEMP_SENSOR_NAME = "temperature";
     static HUMID_SENSOR_NAME = "humidity";
     static DOOR_SENSOR_NAME = "door";
@@ -119,7 +119,7 @@ class SmartFrigDataManager {
     function setHumidAlertHandler(cb) {
         _humidAlertHandler = cb;
     }
-    
+
     /***************************************************************************************
      * getSensors
      * Returns: sensors array
@@ -389,9 +389,9 @@ class Application {
      *      timeSeriesIngestUrl : string - Predix Time Series service ingestion URL
      *      timeSeriesZoneId : string - Predix Zone ID for TimeSeries service
      **************************************************************************************/
-    constructor(uaaUrl, clientId, clientSecret, 
+    constructor(uaaUrl, clientId, clientSecret,
                 assetUrl, assetZoneId, timeSeriesIngestUrl, timeSeriesZoneId) {
-        initializeClasses(uaaUrl, clientId, clientSecret, 
+        initializeClasses(uaaUrl, clientId, clientSecret,
             assetUrl, assetZoneId, timeSeriesIngestUrl, timeSeriesZoneId);
         setDataMngrHandlers();
     }
@@ -408,13 +408,13 @@ class Application {
      *      timeSeriesIngestUrl : string - Predix Time Series service ingestion URL
      *      timeSeriesZoneId : string - Predix Zone ID for TimeSeries service
      **************************************************************************************/
-    function initializeClasses(uaaUrl, clientId, clientSecret, 
+    function initializeClasses(uaaUrl, clientId, clientSecret,
                                assetUrl, assetZoneId,
                                timeSeriesIngestUrl, timeSeriesZoneId) {
         // agent/device communication helper library
         local _bull = Bullwinkle();
         // Library for integration with Predix IoT platform
-        predix = Predix(uaaUrl, clientId, clientSecret, 
+        predix = Predix(uaaUrl, clientId, clientSecret,
             assetUrl, assetZoneId, timeSeriesIngestUrl, timeSeriesZoneId);
         // Class to manage sensor data from device
         dataMngr = SmartFrigDataManager(_bull);
@@ -446,7 +446,7 @@ class Application {
     function streamReadingsHandler(ts, reading) {
         // log the incoming reading
         server.log(http.jsonencode(reading));
-        
+
         // Post data if Predix device configured
         if (devMngr.deviceConfigured) {
             predix.ingestData(devMngr.DEVICE_TYPE_ID, devMngr.deviceID, reading, ts, predixResponseHandler.bindenv(this));
@@ -534,5 +534,5 @@ const TIME_SERIES_ZONE_ID = "<YOUR PREDIX-ZONE-ID FOR TIME SERIES SERVICE>";
 
 // Start Application
 app <- Application(UAA_URL, CLIENT_ID, CLIENT_SECRET,
-                   ASSET_URL, ASSET_ZONE_ID, 
+                   ASSET_URL, ASSET_ZONE_ID,
                    TIME_SERIES_INGEST_URL, TIME_SERIES_ZONE_ID);
